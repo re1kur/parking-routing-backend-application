@@ -1,0 +1,14 @@
+name: dev-pra-id-service
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      - "POSTGRES_DB=develop"
+      - "POSTGRES_PASSWORD=develop"
+      - "POSTGRES_USER=develop"
+    ports:
+      - "5432:5432"
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"

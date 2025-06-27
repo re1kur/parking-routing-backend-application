@@ -9,6 +9,11 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>core-pra</module>
+        <module>identity-service</module>
+        <module>authz-service</module>
+        <module>map-service</module>
+        <module>parking-service</module>
     </modules>
 
     <properties>

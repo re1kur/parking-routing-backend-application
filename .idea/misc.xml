@@ -8,10 +8,11 @@
         <option value="$PROJECT_DIR$/authz-service/pom.xml" />
         <option value="$PROJECT_DIR$/parking-service/pom.xml" />
         <option value="$PROJECT_DIR$/map-service/pom.xml" />
+        <option value="$PROJECT_DIR$/pom.xml" />
       </list>
     </option>
   </component>
-  <component name="ProjectRootManager">
+  <component name="ProjectRootManager" version="2" project-jdk-name="22" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>

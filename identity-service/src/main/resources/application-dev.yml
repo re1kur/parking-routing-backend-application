@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: dev-id-service
+  docker:
+    compose:
+      enabled: true
+      file: identity-service/dev-compose.yml
+
+  liquibase:
+    change-log: db/changelog/db.changelog-master-dev.yml
