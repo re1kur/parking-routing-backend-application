@@ -12,3 +12,8 @@ server:
 cache:
   code:
     ttl: 30
+
+mq:
+  exchange: id-service
+  routing-key:
+    verification-code: code-generated

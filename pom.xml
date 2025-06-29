@@ -14,6 +14,7 @@
         <module>authz-service</module>
         <module>map-service</module>
         <module>parking-service</module>
+        <module>notification-service</module>
     </modules>
 
     <properties>

@@ -16,5 +16,4 @@ public class AppConfiguration {
         template.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
         return template;
     }
-
 }

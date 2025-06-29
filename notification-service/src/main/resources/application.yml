@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: notification-service
+  profiles:
+    active: default
+  mail:
+    host: smtp.gmail.com
+    port: 465
+    username: ${GOOGLE_SMTP_USERNAME}
+    password: ${GOOGLE_SMTP_PASSWORD}
+mq:
+  listen:
+    code-generated-queue: code-generated-queue
+mail:
+  verification-code:
+    text: "PARKING ROUTING SERVICE\nHello there. Here is your verification code: '%s'.\nDo not send this code to anyone!"
+sms-sender:
+  api-id: ${SMS_SERVICE_API_ID}
+  endpoint: "https://sms.ru/sms/send?api_id=%s&to=7%s&msg=%s&json=1"
+  code-text: "%s - code for your login in Parking Routing App."

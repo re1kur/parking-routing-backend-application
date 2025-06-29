@@ -1,5 +1,7 @@
 package re1kur.is.service;
 
 public interface CodeService {
-    void generateNew(String id);
+    String generateCode(String id);
+
+    void validateCode(String id, String expected);
 }
