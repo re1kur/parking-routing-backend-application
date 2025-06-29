@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import re1kur.core.dto.Credentials;
 import re1kur.core.payload.GenerateCodeRequest;
 import re1kur.core.payload.LoginRequest;
 import re1kur.core.payload.UserPayload;
@@ -28,9 +29,9 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody @Valid LoginRequest request) {
-        service.login(request);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Credentials> login(@RequestBody @Valid LoginRequest request) {
+        Credentials cred = service.login(request);
+        return ResponseEntity.ok(cred);
     }
 
     @PostMapping("/code")
@@ -38,5 +39,4 @@ public class AuthenticationController {
         service.generateCode(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
-
 }

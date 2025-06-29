@@ -1,0 +1,15 @@
+spring:
+  docker:
+    compose:
+      enabled: true
+      file: authz-service/dev-compose.yml
+  devtools:
+    add-properties: true
+
+client:
+  identity-service:
+    login-endpoint: http://localhost:8081/api/auth/login
+
+logging:
+  level:
+    web: debug

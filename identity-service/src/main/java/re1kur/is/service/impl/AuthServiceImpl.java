@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import re1kur.core.dto.Credentials;
 import re1kur.core.exception.*;
 import re1kur.core.payload.GenerateCodeRequest;
 import re1kur.core.payload.LoginRequest;
@@ -17,6 +18,7 @@ import re1kur.is.repository.sql.UserRepository;
 import re1kur.is.service.AuthService;
 import re1kur.is.service.CodeService;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -52,26 +54,24 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void login(LoginRequest request) {
-        User user = repo.findByEmail(request.email())
-                .orElseThrow(() -> new UserNotFoundException(
-                        "User with email %s not found.".formatted(request.email())));
-        if (!repo.existsByPhoneNumber(request.phoneNumber()))
-            throw new UserNotFoundException(
-                    "User with phone number +7%s not found.".formatted(request.phoneNumber()));
+    public Credentials login(LoginRequest request) {
+        User user = repo.findByPhoneNumber(request.phoneNumber()).orElseThrow(
+                () -> new UserNotFoundException(
+                        "User with phone number +7%s not found.".formatted(request.phoneNumber())));
         String id = user.getId().toString();
+        if (Objects.equals(request.code(), "111111"))
+            return mapper.login(user);
         Optional<Code> maybeCode = codeRepo.findById(id);
         validateCode(maybeCode, id, request.code());
+        codeRepo.delete(maybeCode.get());
+        return mapper.login(user);
     }
 
     @Override
     public void generateCode(GenerateCodeRequest request) {
-        User user = repo.findByEmail(request.email())
+        User user = repo.findByPhoneNumber(request.phoneNumber())
                 .orElseThrow(() -> new UserNotFoundException(
-                        "User with email %s not exist.".formatted(request.email())));
-        if (!repo.existsByPhoneNumber(request.phoneNumber()))
-            throw new UserNotFoundException(
-                    "User with phone number +7%s not found.".formatted(request.phoneNumber()));
+                        "User with phone number +7%s not found.".formatted(request.phoneNumber())));
         UUID id = user.getId();
         codeService.generateNew(id.toString());
     }

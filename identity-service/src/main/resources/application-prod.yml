@@ -2,5 +2,7 @@ spring:
   docker:
     compose:
       enabled: false
+  devtools:
+    add-properties: false
   liquibase:
     change-log: db/changelog/db.changelog-master.yml

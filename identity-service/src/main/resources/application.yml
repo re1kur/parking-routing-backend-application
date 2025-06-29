@@ -3,6 +3,11 @@ spring:
     name: identity-service
   profiles:
     active: dev
+  jpa:
+    open-in-view: false
+
+server:
+  port: 8081
 
 cache:
   code:

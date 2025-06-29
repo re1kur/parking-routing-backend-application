@@ -2,18 +2,15 @@ package re1kur.is.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import re1kur.core.exception.*;
 
-import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
-public class ControllerExceptionAdvice {
+public class ControllerExceptionHandler {
     @ExceptionHandler(exception = UserNotFoundException.class)
     public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
