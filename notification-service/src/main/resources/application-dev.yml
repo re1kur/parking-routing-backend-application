@@ -1,0 +1,5 @@
+spring:
+  rabbitmq:
+    password: developer
+    username: developer
+    virtual-host: /

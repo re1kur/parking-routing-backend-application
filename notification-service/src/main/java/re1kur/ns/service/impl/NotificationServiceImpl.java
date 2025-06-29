@@ -32,9 +32,9 @@ public class NotificationServiceImpl implements NotificationService {
         try {
             SimpleMailMessage mail = mailMapper.code(event, from);
             mailSender.send(mail);
-            log.info("Send verification code notification to {}", event.email());
+            log.info("Send mail of log in code notification to {}", event.getEmail());
         } catch (MailException e) {
-            log.error("Error while sending verification code: {}", e.getMessage());
+            log.error("Error while sending mail log in code: {}", e.getMessage());
         }
         SmsMessage sms = smsMapper.code(event);
         smsSender.send(sms);

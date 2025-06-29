@@ -14,8 +14,8 @@ public class SmsMapperImpl implements SmsMapper {
     @Override
     public SmsMessage code(CodeGeneratedEvent event) {
         return SmsMessage.builder()
-                .to(event.phone())
-                .msg(codeText.formatted(event.code()))
+                .to(event.getPhone())
+                .msg(codeText.formatted(event.getCode()))
                 .build();
     }
 }

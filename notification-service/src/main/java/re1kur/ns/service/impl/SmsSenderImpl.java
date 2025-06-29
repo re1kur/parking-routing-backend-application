@@ -1,6 +1,7 @@
 package re1kur.ns.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -11,6 +12,9 @@ import re1kur.core.dto.SmsMessage;
 import re1kur.ns.service.SmsSender;
 import re1kur.ns.sms.SmsSendResponse;
 
+import java.util.Objects;
+
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class SmsSenderImpl implements SmsSender {
@@ -24,6 +28,7 @@ public class SmsSenderImpl implements SmsSender {
 
     @Override
     public void send(SmsMessage sms) {
+        log.info("Sending SMS to {}", sms.to());
         String formatted = endpoint.formatted(apiId, sms.to(), sms.msg());
         ResponseEntity<SmsSendResponse> exchange = template.exchange(
                 formatted,
@@ -31,5 +36,6 @@ public class SmsSenderImpl implements SmsSender {
                 new HttpEntity<>(null),
                 SmsSendResponse.class);
         exchange.getStatusCode();
+        log.info("SMS successfully sent: {}", Objects.requireNonNull(exchange.getBody()).getSms());
     }
 }

@@ -1,0 +1,47 @@
+{
+  "users": [
+    {
+      "name": "developer",
+      "password": "developer",
+      "tags": "administrator"
+    }
+  ],
+  "vhosts": [
+    {
+      "name": "/"
+    }
+  ],
+  "permissions": [
+    {
+      "user": "developer",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "exchanges": [
+    {
+      "name": "id-service",
+      "vhost": "/",
+      "type": "topic",
+      "durable": true
+    }
+  ],
+  "queues": [
+    {
+      "name": "code-generated-queue",
+      "vhost": "/",
+      "durable": true
+    }
+  ],
+  "bindings": [
+    {
+      "source": "id-service",
+      "vhost": "/",
+      "destination": "code-generated-queue",
+      "routing_key": "code-generated",
+      "destination_type": "queue"
+    }
+  ]
+}

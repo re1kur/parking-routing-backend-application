@@ -9,6 +9,10 @@ spring:
     add-properties: true
   liquibase:
     change-log: db/changelog/db.changelog-master-dev.yml
+  rabbitmq:
+    password: developer
+    username: developer
+    virtual-host: /
 logging:
   level:
     web: debug
