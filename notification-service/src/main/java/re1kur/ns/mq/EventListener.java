@@ -1,4 +1,4 @@
-package re1kur.ns.listener;
+package re1kur.ns.mq;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +10,7 @@ import re1kur.ns.service.NotificationService;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class DefaultListener {
+public class EventListener {
     private final NotificationService service;
 
     @RabbitListener(queues = "${mq.listen.code-generated-queue}")

@@ -3,12 +3,10 @@ package re1kur.is.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import re1kur.core.dto.UserDto;
 import re1kur.core.payload.UserInformationPayload;
 import re1kur.is.service.UserService;
-import org.springframework.security.oauth2.jwt.Jwt;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,9 +21,9 @@ public class UserInformationController {
     }
 
     @PutMapping("/info/update")
-    public ResponseEntity<UserDto> updateInfo(@AuthenticationPrincipal Jwt token,
+    public ResponseEntity<UserDto> updateInfo(@RequestHeader("Authorization") String authHeader,
                                               @RequestBody UserInformationPayload payload) {
-        UserDto body = service.updateUserInfo(payload, token.getSubject());
+        UserDto body = service.updateUserInfo(payload, authHeader);
         return ResponseEntity.ok(body);
     }
 }

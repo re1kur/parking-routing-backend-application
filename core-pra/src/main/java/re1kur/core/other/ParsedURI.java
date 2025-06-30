@@ -1,4 +1,4 @@
-package re1kur.authz.authz;
+package re1kur.core.other;
 
 import lombok.Value;
 

@@ -2,8 +2,12 @@
 
 --changeset re1kur:1
 INSERT INTO roles(name)
-VALUES ('MODERATOR');
+VALUES ('USER');
 
 --changeset re1kur:2
+INSERT INTO roles(name)
+VALUES ('MODERATOR');
+
+--changeset re1kur:3
 INSERT INTO roles(name)
 VALUES ('OPERATOR');

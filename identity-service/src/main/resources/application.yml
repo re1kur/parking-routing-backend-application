@@ -14,6 +14,12 @@ cache:
     ttl: 30
 
 mq:
-  exchange: id-service
+  exchange: id-service.exchange
+  privacy-policy-exchange: privacy-policy.exchange
   routing-key:
-    verification-code: code-generated
+    service-registration: service.registered
+    verification-code: code.generated
+
+policy:
+  endpoints:
+    file-path: identity-service/src/main/resources/policy/endpoints.yml

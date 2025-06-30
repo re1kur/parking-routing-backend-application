@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import re1kur.core.dto.UserDto;
 import re1kur.core.exception.UserNotFoundException;
+import re1kur.core.other.JwtExtractor;
 import re1kur.core.payload.UserInformationPayload;
 import re1kur.is.entity.User;
 import re1kur.is.entity.UserInformation;
@@ -34,8 +35,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto updateUserInfo(UserInformationPayload payload, String subject) {
-        User user = userRepo.findById(UUID.fromString(subject)).orElseThrow(() -> new UserNotFoundException("User %s not found.".formatted(subject)));
+    public UserDto updateUserInfo(UserInformationPayload payload, String authHeader) {
+        String subject = extractSubFromJwt(authHeader);
+        User user = userRepo.findById(UUID.fromString(subject)).orElseThrow(
+                () -> new UserNotFoundException("User %s not found.".formatted(subject)));
         UserInformation information = user.getInformation();
         if (information == null) {
             information = UserInformation.builder()

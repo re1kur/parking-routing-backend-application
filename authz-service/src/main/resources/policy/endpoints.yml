@@ -1,0 +1,18 @@
+service_name: authz-service
+policies: [
+  {
+    method_name: "/api/authz/login",
+    method_type: "POST",
+    roles: [ ]
+  },
+  {
+    method_name: "/api/authz/authorize",
+    method_type: "POST",
+    roles: [ ]
+  },
+  {
+    method_name: "/api/token/refresh",
+    method_type: "POST",
+    roles: [ ]
+  }
+]

@@ -22,7 +22,13 @@
   ],
   "exchanges": [
     {
-      "name": "id-service",
+      "name": "id-service.exchange",
+      "vhost": "/",
+      "type": "topic",
+      "durable": true
+    },
+    {
+      "name": "privacy-policy.exchange",
       "vhost": "/",
       "type": "topic",
       "durable": true
@@ -30,17 +36,41 @@
   ],
   "queues": [
     {
-      "name": "code-generated-queue",
+      "name": "code.generated.queue",
+      "vhost": "/",
+      "durable": true
+    },
+    {
+      "name": "service.registered.queue",
+      "vhost": "/",
+      "durable": true
+    },
+    {
+      "name": "service.privacy-policy-changed.queue",
       "vhost": "/",
       "durable": true
     }
   ],
   "bindings": [
     {
-      "source": "id-service",
+      "source": "id-service.exchange",
       "vhost": "/",
-      "destination": "code-generated-queue",
-      "routing_key": "code-generated",
+      "destination": "code.generated.queue",
+      "routing_key": "code.generated",
+      "destination_type": "queue"
+    },
+    {
+      "source": "privacy-policy.exchange",
+      "vhost": "/",
+      "destination": "service.registered.queue",
+      "routing_key": "service.registered",
+      "destination_type": "queue"
+    },
+    {
+      "source": "privacy-policy.exchange",
+      "vhost": "/",
+      "destination": "service.privacy-policy-changed.queue",
+      "routing_key": "service.privacy-policy-changed",
       "destination_type": "queue"
     }
   ]

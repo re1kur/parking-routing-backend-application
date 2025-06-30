@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS access_rules
 (
     endpoint_id SMALLINT NOT NULL,
     role        VARCHAR(32),
-    PRIMARY KEY (endpoint_id, role),
+    UNIQUE (endpoint_id, role),
     FOREIGN KEY (endpoint_id) REFERENCES endpoints (id) ON DELETE CASCADE
 );
 

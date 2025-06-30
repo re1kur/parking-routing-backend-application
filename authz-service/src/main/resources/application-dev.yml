@@ -5,6 +5,10 @@ spring:
       file: authz-service/dev-compose.yml
   devtools:
     add-properties: true
+  rabbitmq:
+    password: developer
+    username: developer
+    virtual-host: /
 
 client:
   identity-service:

@@ -5,13 +5,14 @@ import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import re1kur.authz.authz.ParsedURI;
+import re1kur.core.other.ParsedURI;
 import re1kur.authz.client.IdentityClient;
 import re1kur.authz.client.JdbcClient;
 import re1kur.core.dto.Credentials;
 import re1kur.authz.jwt.JwtProvider;
 import re1kur.authz.service.AuthzService;
 import re1kur.core.dto.JwtToken;
+import re1kur.core.event.ServiceRegisteredEvent;
 import re1kur.core.exception.EndpointNotFoundException;
 import re1kur.core.exception.TokenDidNotPassVerificationException;
 import re1kur.core.exception.UserDoesNotHavePermissionForEndpoint;
@@ -41,7 +42,7 @@ public class AuthzServiceImpl implements AuthzService {
 
     @Override
     public void authorizeRequest(String token, String uri, String methodType) throws ParseException {
-        JWT jwt = SignedJWT.parse(token);
+        JWT jwt = SignedJWT.parse(token.replace("Bearer ", ""));
         String subject = jwt.getJWTClaimsSet().getSubject();
         if (!jwtProvider.verifySignature(jwt))
             throw new TokenDidNotPassVerificationException("Token did not pass verification.");
@@ -72,5 +73,10 @@ public class AuthzServiceImpl implements AuthzService {
                     ("User '%s' does not have permission for endpoint '%s' [%s]."
                             .formatted(subject, uri, methodType));
         }
+    }
+
+    @Override
+    public void registerPrivacyPolicy(ServiceRegisteredEvent event) {
+        jdbcClient.saveEndpointsByService(event);
     }
 }

@@ -17,3 +17,7 @@ jwt:
   privateKeyPath: /tmp/private.key
   publicKeyPath: /tmp/public.key
   kidPath: /tmp/kid.txt
+
+mq:
+  listen:
+    service-registered-queue: service.registered.queue
