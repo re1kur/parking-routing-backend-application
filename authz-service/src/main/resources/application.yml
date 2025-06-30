@@ -3,14 +3,17 @@ spring:
     name: authz-service
   profiles:
     active: dev
+  liquibase:
+    change-log: db/changelog/db.changelog-master.yml
 server:
   port: 8082
 
-custom:
-  jwt:
-    ttl-hours: 12
-    refresh-ttl-days: 7
-    keySize: 2048
-    privateKeyPath: /tmp/private.key
-    publicKeyPath: /tmp/public.key
-    kidPath: /tmp/kid.txt
+jwt:
+  claim-name:
+    roles: scope
+  ttl-hours: 12
+  refresh-ttl-days: 7
+  keySize: 2048
+  privateKeyPath: /tmp/private.key
+  publicKeyPath: /tmp/public.key
+  kidPath: /tmp/kid.txt

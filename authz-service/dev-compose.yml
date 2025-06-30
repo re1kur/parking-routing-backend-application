@@ -1,5 +1,14 @@
+name: dev-pra-authz
 services:
   redis:
-    image: 'redis:latest'
+    image: redis:latest
     ports:
-      - '6379'
+      - "6379:6379"
+  postgres:
+    image: postgres:17
+    environment:
+      - "POSTGRES_USER=developer"
+      - "POSTGRES_PASSWORD=developer"
+      - "POSTGRES_DB=developer"
+    ports:
+      - "5433:5432"

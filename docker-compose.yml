@@ -1,13 +1,14 @@
 name: dev-pra
 services:
   rabbit:
-    env_file: .env
-    image: rabbitmq:latest
-    volumes:
-      - ./definitions.json:/etc/rabbitmq/definitions.json
-      - ./enabled_plugins:/etc/rabbitmq/enabled_plugins
-    environment:
-      RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: "-rabbitmq_management load_definitions '/etc/rabbitmq/definitions.json'"
+    env_file: rabbitmq/rabbitmq.env
+    build: rabbitmq/.
     ports:
       - "5672:5672"
       - "15672:15672"
+  nginx:
+    image: nginx:stable
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "8080:80"

@@ -26,11 +26,14 @@ public class TokenServiceImpl implements TokenService {
     private final JwtProvider jwtProvider;
     private final TokenRepository repo;
 
-    @Value("${custom.jwt.publicKeyPath}")
+    @Value("${jwt.publicKeyPath}")
     private String publicKeyPath;
 
-    @Value("${custom.jwt.kidPath}")
+    @Value("${jwt.kidPath}")
     private String kidPath;
+
+    @Value("${jwt.claim-name.roles}")
+    private String claimNameRoles;
 
     @Override
     public JwtToken refreshToken(String refreshToken) throws ParseException {
@@ -60,7 +63,7 @@ public class TokenServiceImpl implements TokenService {
                 .sub(sub)
                 .email((String) parsed.getJWTClaimsSet().getClaim("email"))
                 .phone((String) parsed.getJWTClaimsSet().getClaim("phone"))
-                .scope((String) parsed.getJWTClaimsSet().getClaim("scope"))
+                .scope((String) parsed.getJWTClaimsSet().getClaim(claimNameRoles))
                 .build();
     }
 

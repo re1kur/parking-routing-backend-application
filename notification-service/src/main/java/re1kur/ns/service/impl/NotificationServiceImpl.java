@@ -29,13 +29,13 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void sendVerificationCodeNotification(CodeGeneratedEvent event) {
-        try {
-            SimpleMailMessage mail = mailMapper.code(event, from);
-            mailSender.send(mail);
-            log.info("Send mail of log in code notification to {}", event.getEmail());
-        } catch (MailException e) {
-            log.error("Error while sending mail log in code: {}", e.getMessage());
-        }
+//        try {
+//            SimpleMailMessage mail = mailMapper.code(event, from);
+//            mailSender.send(mail);
+//            log.info("Send mail of log in code notification to {}", event.getEmail());
+//        } catch (MailException e) {
+//            log.error("Error while sending mail log in code: {}", e.getMessage());
+//        }
         SmsMessage sms = smsMapper.code(event);
         smsSender.send(sms);
     }

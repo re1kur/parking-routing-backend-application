@@ -17,8 +17,9 @@ public class UserInformationController {
     private final UserService service;
 
     @GetMapping("/info")
-    public ResponseEntity<UserDto> getInfo(@AuthenticationPrincipal Jwt token) {
-        return ResponseEntity.status(HttpStatus.OK).body(service.getPersonalInfo(token.getSubject()));
+    public ResponseEntity<UserDto> getInfo(@RequestHeader("Authorization") String authHeader) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(service.getPersonalInfo(authHeader));
     }
 
     @PutMapping("/info/update")

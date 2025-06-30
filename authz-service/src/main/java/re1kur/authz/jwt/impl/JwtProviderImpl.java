@@ -38,23 +38,26 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 public class JwtProviderImpl implements JwtProvider {
-    @Value("${custom.jwt.privateKeyPath}")
+    @Value("${jwt.privateKeyPath}")
     private String privateKeyPath;
 
-    @Value("${custom.jwt.publicKeyPath}")
+    @Value("${jwt.publicKeyPath}")
     private String publicKeyPath;
 
-    @Value("${custom.jwt.kidPath}")
+    @Value("${jwt.kidPath}")
     private String kidPath;
 
-    @Value("${custom.jwt.keySize}")
+    @Value("${jwt.keySize}")
     private int keySize;
 
-    @Value("${custom.jwt.ttl-hours}")
+    @Value("${jwt.ttl-hours}")
     private int accessTtl;
 
-    @Value("${custom.jwt.refresh-ttl-days}")
+    @Value("${jwt.refresh-ttl-days}")
     private int refreshTtl;
+
+    @Value("${jwt.claim-name.roles}")
+    private String rolesClaimName;
 
     private final TokenRepository repo;
 
@@ -87,7 +90,7 @@ public class JwtProviderImpl implements JwtProvider {
                 .claim("sub", cred.sub())
                 .claim("phone", cred.phone())
                 .claim("email", cred.email())
-                .claim("scope", cred.scope())
+                .claim(rolesClaimName, cred.scope())
                 .claim("token_type", "access")
                 .issueTime(new Date())
                 .expirationTime(Date.from(LocalDateTime.now().plusHours(accessTtl).toInstant(ZoneOffset.UTC)))

@@ -15,6 +15,8 @@ import re1kur.is.service.UserService;
 
 import java.util.UUID;
 
+import static re1kur.core.other.JwtExtractor.extractSubFromJwt;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -24,7 +26,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDto getPersonalInfo(String sub) {
+    public UserDto getPersonalInfo(String token) {
+        String sub = extractSubFromJwt(token);
         return mapper.read(userRepo.findById(
                 UUID.fromString(sub)).orElseThrow(() ->
                 new UserNotFoundException("User %s not found.".formatted(sub))));

@@ -30,12 +30,13 @@ public class SmsSenderImpl implements SmsSender {
     public void send(SmsMessage sms) {
         log.info("Sending SMS to {}", sms.to());
         String formatted = endpoint.formatted(apiId, sms.to(), sms.msg());
-        ResponseEntity<SmsSendResponse> exchange = template.exchange(
-                formatted,
-                HttpMethod.GET,
-                new HttpEntity<>(null),
-                SmsSendResponse.class);
-        exchange.getStatusCode();
-        log.info("SMS successfully sent: {}", Objects.requireNonNull(exchange.getBody()).getSms());
+        log.info(formatted);
+//        ResponseEntity<SmsSendResponse> exchange = template.exchange(
+//                formatted,
+//                HttpMethod.GET,
+//                new HttpEntity<>(null),
+//                SmsSendResponse.class);
+//        exchange.getStatusCode();
+//        log.info("SMS successfully sent: {}", Objects.requireNonNull(exchange.getBody()).getSms());
     }
 }
