@@ -1,0 +1,15 @@
+spring:
+  docker:
+    compose:
+      enabled: true
+      file: parking-service/dev-compose.yml
+  devtools:
+    add-properties: false
+  liquibase:
+    change-log: db/changelog/db.changelog-master.yml
+  jpa:
+    show-sql: true
+
+client:
+  identity-service:
+    identify-endpoint: http://localhost:8081/api/users/identify

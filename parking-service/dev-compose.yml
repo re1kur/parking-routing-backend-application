@@ -1,0 +1,10 @@
+name: dev-pra-ps
+services:
+  postgres:
+    image: 'postgres:17'
+    environment:
+      - 'POSTGRES_DB=developer'
+      - 'POSTGRES_PASSWORD=developer'
+      - 'POSTGRES_USER=developer'
+    ports:
+      - '5435:5432'

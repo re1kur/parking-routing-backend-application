@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import re1kur.core.dto.UserDto;
 import re1kur.core.exception.UserNotFoundException;
-import re1kur.core.other.JwtExtractor;
 import re1kur.core.payload.UserInformationPayload;
 import re1kur.is.entity.User;
 import re1kur.is.entity.UserInformation;
@@ -51,5 +50,10 @@ public class UserServiceImpl implements UserService {
         if (payload.middleName() != null) information.setMiddleName(payload.middleName());
         infoRepo.save(information);
         return mapper.read(user);
+    }
+
+    @Override
+    public Boolean existsById(UUID id) {
+        return userRepo.existsById(id);
     }
 }

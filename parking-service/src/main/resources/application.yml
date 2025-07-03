@@ -1,1 +1,12 @@
-spring.application.name=parking-service
+spring:
+  application:
+    name: parking-service
+  profiles:
+    active: dev
+  jpa:
+    open-in-view: false
+  sql:
+    init:
+      mode: never
+server:
+  port: 8083
