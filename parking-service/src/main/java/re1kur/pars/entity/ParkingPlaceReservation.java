@@ -28,5 +28,6 @@ public class ParkingPlaceReservation {
 
     private OffsetDateTime endsAt;
 
+    @Column(insertable = false, columnDefinition = "DEFAULT FALSE")
     private Boolean isPaid;
 }

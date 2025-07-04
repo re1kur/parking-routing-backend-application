@@ -55,6 +55,7 @@ public class CarMapperImpl implements CarMapper {
         CarInformation carInformation = saved.getCarInformation();
         return CarFullDto.builder()
                 .carId(saved.getId())
+                .ownerId(saved.getOwnerId())
                 .licensePlate(saved.getLicensePlate())
                 .regionCode(saved.getRegionCode().getCode())
                 .regionName(saved.getRegionCode().getRegion().getName())

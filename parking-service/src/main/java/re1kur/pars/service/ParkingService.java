@@ -13,4 +13,6 @@ public interface ParkingService {
     ParkingPlaceFullDto getFullByNumber(Integer number);
 
     ParkingPlaceShortDto getShortByNumber(Integer number);
+
+    ParkingPlaceDto clear(String token, Integer number);
 }

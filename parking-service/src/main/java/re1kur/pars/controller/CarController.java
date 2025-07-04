@@ -3,6 +3,7 @@ package re1kur.pars.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import re1kur.core.dto.CarDto;
@@ -25,16 +26,16 @@ public class CarController {
     @PostMapping("/register")
     public ResponseEntity<CarShortDto> registerCar(
             @RequestHeader(name = "Authorization") String token,
-            @Valid @RequestBody CarPayload payload
+            @RequestBody @Valid CarPayload payload
     ) {
-        CarShortDto registered = carService.register(payload, token);
-        return ResponseEntity.ok(registered);
+        CarShortDto body = carService.register(payload, token);
+        return ResponseEntity.status(HttpStatus.CREATED).body(body);
     }
 
     @PutMapping("/edit")
     public ResponseEntity<CarFullDto> editCar(
             @RequestHeader("Authorization") String token,
-            @Valid @RequestBody CarUpdatePayload payload
+            @RequestBody @Valid CarUpdatePayload payload
     ) {
         CarFullDto updated = carService.edit(payload, token);
         return ResponseEntity.ok(updated);

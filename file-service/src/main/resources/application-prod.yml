@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://ums-service:8081/api/token/jwks
+  docker:
+    compose:
+      enabled: false
+
+minio:
+  access-key: ${SPRING_MINIO_ACCESS_KEY}
+  secret-key: ${SPRING_MINIO_SECRET_KEY}
+  endpoint: ${SPRING_MINIO_ENDPOINT}
+  endpoint-override: ${SPRING_MINIO_ENDPOINT_OVERRIDE}
+  url:
+    time-to-live: 7
+  default-bucket: mobhackcor-bucket

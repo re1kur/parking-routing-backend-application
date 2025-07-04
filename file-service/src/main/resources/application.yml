@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: file-service
+  profiles:
+    active: dev
+  liquibase:
+    change-log: db/changelog/db.changelog-master.yml
+  jpa:
+    open-in-view: false
+server:
+  port: 8083
+

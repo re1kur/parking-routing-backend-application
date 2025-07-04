@@ -23,5 +23,6 @@ public class ParkingPlaceInformation {
     @JoinColumn(name = "occupant_car_id")
     private Car OccupantCar;
 
+    @Column(insertable = false, columnDefinition = "DEFAULT FALSE")
     private Boolean isAvailable;
 }

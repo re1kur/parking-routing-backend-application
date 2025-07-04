@@ -1,6 +1,8 @@
 package re1kur.pars.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import re1kur.core.dto.ParkingPlaceFullDto;
@@ -10,16 +12,25 @@ import re1kur.core.payload.ParkingPlacePayload;
 import re1kur.pars.service.ParkingService;
 
 @RestController
-@RequestMapping("/api/parking")
+@RequestMapping("/api/parking/place")
 @RequiredArgsConstructor
 public class ParkingController {
     private final ParkingService service;
 
-    @PostMapping("/create-place")
+    @PostMapping("/create")
     public ResponseEntity<ParkingPlaceShortDto> createParkingPlace(
             @RequestHeader(name = "Authorization") String token,
-            ParkingPlacePayload payload) {
+            @RequestBody @Valid ParkingPlacePayload payload) {
         ParkingPlaceShortDto body = service.create(payload, token);
+        return ResponseEntity.status(HttpStatus.CREATED).body(body);
+    }
+
+    @PutMapping("/clear")
+    public ResponseEntity<ParkingPlaceDto> clearParkingPlace(
+            @RequestHeader(name = "Authorization") String token,
+            @RequestParam(name = "number") Integer number
+    ) {
+        ParkingPlaceDto body = service.clear(token, number);
         return ResponseEntity.ok(body);
     }
 

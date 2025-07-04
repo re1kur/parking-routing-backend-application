@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS car_information
     color   VARCHAR(16) NOT NULL,
     model   VARCHAR(32) NOT NULL,
     FOREIGN KEY (make_id) REFERENCES makes (id),
-    FOREIGN KEY (car_id) REFERENCES cars (id)
+    FOREIGN KEY (car_id) REFERENCES cars (id) ON DELETE CASCADE
 );
 
 --changeset re1kur:6

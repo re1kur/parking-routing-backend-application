@@ -151,7 +151,7 @@ public class CarServiceImpl implements CarService {
                 "User '%s' does not have permission to edit not own car.".formatted(userId));
 
         carRepo.delete(found);
-        log.info("Car deleted: {}", found);
+        log.info("Car with ID '{}' deleted.", carId);
     }
 
     @Override

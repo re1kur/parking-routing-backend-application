@@ -14,4 +14,6 @@ public interface ParkingMapper {
     ParkingPlaceDto read(ParkingPlace parkingPlace);
 
     ParkingPlaceFullDto readFull(ParkingPlace parkingPlace);
+
+    ParkingPlace clear(ParkingPlace parkingPlace);
 }
