@@ -23,7 +23,7 @@ public class FileController {
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<String> downloadFile(@PathVariable("id") String id) {
+    public ResponseEntity<String> getUrlFile(@PathVariable("id") String id) {
         return ResponseEntity.status(HttpStatus.FOUND).body(service.getUrl(id));
     }
 }

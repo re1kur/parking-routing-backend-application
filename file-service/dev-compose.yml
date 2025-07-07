@@ -1,4 +1,4 @@
-name: dev-mob-fs
+name: dev-pra-fs
 services:
   postgres:
     image: postgres:17
