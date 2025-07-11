@@ -25,6 +25,7 @@
 /home/re1kur/Projects/parking-routing-backend-app/core-pra/src/main/java/re1kur/core/exception/EndpointNotFoundException.java
 /home/re1kur/Projects/parking-routing-backend-app/core-pra/src/main/java/re1kur/core/exception/FileNotFoundException.java
 /home/re1kur/Projects/parking-routing-backend-app/core-pra/src/main/java/re1kur/core/exception/IdentityServiceAuthenticationException.java
+/home/re1kur/Projects/parking-routing-backend-app/core-pra/src/main/java/re1kur/core/exception/InvalidTokenException.java
 /home/re1kur/Projects/parking-routing-backend-app/core-pra/src/main/java/re1kur/core/exception/MakeNotFoundException.java
 /home/re1kur/Projects/parking-routing-backend-app/core-pra/src/main/java/re1kur/core/exception/ParkingPlaceAlreadyExistsException.java
 /home/re1kur/Projects/parking-routing-backend-app/core-pra/src/main/java/re1kur/core/exception/ParkingPlaceNotFoundException.java

@@ -46,6 +46,7 @@ re1kur/core/payload/CarPayload.class
 re1kur/core/exception/CarNotFoundException.class
 re1kur/core/other/ReservationQueryFiler.class
 re1kur/core/exception/ParkingPlaceAlreadyExistsException.class
+re1kur/core/exception/InvalidTokenException.class
 re1kur/core/exception/MakeNotFoundException.class
 re1kur/core/exception/TokenNotFoundException.class
 re1kur/core/exception/CodeHasExpiredException.class

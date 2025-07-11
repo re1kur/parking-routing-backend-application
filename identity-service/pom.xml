@@ -11,10 +11,10 @@
     <groupId>re1kur</groupId>
     <artifactId>is</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Identity service</name>
+    <name>Identity Service</name>
     <description>common acts with users</description>
     <properties>
-        <java.version>21</java.version>
+        <java.version>24</java.version>
     </properties>
     <dependencies>
         <dependency>

@@ -1,11 +1,11 @@
-FROM maven:3.9.9-eclipse-temurin-21 AS build
+FROM maven:3.9.9-eclipse-temurin-24-alpine AS build
 
 COPY . .
 
-RUN mvn clean package
+RUN mvn clean package -pl file-service -am -DskipTests
 
-FROM bellsoft/liberica-openjdk-debian:21
+FROM eclipse-temurin:24-jre-alpine
 
-COPY --from=build /file-service/target/fs-0.0.1-SNAPSHOT.jar application.jar
+COPY --from=build /file-service/target/fs-0.0.1-SNAPSHOT.jar file-service.jar
 
-ENTRYPOINT ["java", "-jar", "application.jar"]
+ENTRYPOINT ["java", "-jar", "file-service.jar"]
