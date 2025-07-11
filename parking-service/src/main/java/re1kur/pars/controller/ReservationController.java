@@ -62,7 +62,7 @@ public class ReservationController {
         return ResponseEntity.ok(body);
     }
 
-    @GetMapping("/list/today")
+    @GetMapping(params = "number", path = "/list/today")
     public ResponseEntity<List<ParkingPlaceReservationDto>> getListReservationsByNumberForToday(
             @RequestParam(name = "number") Integer number
     ) {

@@ -17,7 +17,6 @@ import re1kur.is.repository.sql.UserRepository;
 import re1kur.is.service.AuthService;
 import re1kur.is.service.CodeService;
 
-import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
@@ -56,8 +55,6 @@ public class AuthServiceImpl implements AuthService {
         User user = repo.findByPhoneNumber(request.phoneNumber()).orElseThrow(
                 () -> new UserNotFoundException(
                         "User with phone number +7%s not found.".formatted(request.phoneNumber())));
-        if (Objects.equals(request.code(), "111111"))
-            return mapper.login(user);
         codeService.validateCode(user.getId().toString(), request.code());
         return mapper.login(user);
     }

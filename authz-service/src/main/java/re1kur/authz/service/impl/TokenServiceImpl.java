@@ -36,7 +36,7 @@ public class TokenServiceImpl implements TokenService {
     private String claimNameRoles;
 
     @Override
-    public JwtToken refreshToken(String refreshToken) throws ParseException {
+    public JwtToken refreshToken(String refreshToken)  {
         Credentials credentials = verify(refreshToken);
 
         String sub = credentials.sub();
@@ -49,22 +49,27 @@ public class TokenServiceImpl implements TokenService {
         return jwtProvider.getToken(credentials);
     }
 
-    private Credentials verify(String refreshToken) throws ParseException {
-        JWT parsed = JWTParser.parse(refreshToken);
-        String sub = parsed.getJWTClaimsSet().getSubject();
-        Instant expiration = parsed.getJWTClaimsSet().getExpirationTime().toInstant();
-        if (!jwtProvider.verifySignature(parsed)) {
-            throw new TokenDidNotPassVerificationException("Token did not pass verification.");
+    private Credentials verify(String refreshToken) {
+        try {
+            JWT parsed = JWTParser.parse(refreshToken);
+            String sub = parsed.getJWTClaimsSet().getSubject();
+            Instant expiration = parsed.getJWTClaimsSet().getExpirationTime().toInstant();
+
+            if (!jwtProvider.verifySignature(parsed)) {
+                throw new TokenDidNotPassVerificationException("Token did not pass verification.");
+            }
+            if (Instant.now().isAfter(expiration)) {
+                throw new TokenHasExpiredException("Token has expired. Authenticate again.");
+            }
+            return Credentials.builder()
+                    .sub(sub)
+                    .email((String) parsed.getJWTClaimsSet().getClaim("email"))
+                    .phone((String) parsed.getJWTClaimsSet().getClaim("phone"))
+                    .scope((String) parsed.getJWTClaimsSet().getClaim(claimNameRoles))
+                    .build();
+        } catch (ParseException e) {
+            throw new InvalidTokenException("Invalid refresh token: %s".formatted(refreshToken));
         }
-        if (Instant.now().isAfter(expiration)) {
-            throw new TokenHasExpiredException("Token has expired. Authenticate again.");
-        }
-        return Credentials.builder()
-                .sub(sub)
-                .email((String) parsed.getJWTClaimsSet().getClaim("email"))
-                .phone((String) parsed.getJWTClaimsSet().getClaim("phone"))
-                .scope((String) parsed.getJWTClaimsSet().getClaim(claimNameRoles))
-                .build();
     }
 
     @Override

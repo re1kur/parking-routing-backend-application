@@ -1,6 +1,7 @@
 package re1kur.is.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import re1kur.core.dto.UserDto;
@@ -17,6 +18,7 @@ import java.util.UUID;
 
 import static re1kur.core.other.JwtExtractor.extractSubFromJwt;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -28,9 +30,13 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public UserDto getPersonalInfo(String token) {
         String sub = extractSubFromJwt(token);
-        return mapper.read(userRepo.findById(
-                UUID.fromString(sub)).orElseThrow(() ->
-                new UserNotFoundException("User %s not found.".formatted(sub))));
+        log.info("Received 'get info' request by ID: {}", sub);
+
+        User found = userRepo.findById(UUID.fromString(sub))
+                .orElseThrow(() ->
+                new UserNotFoundException("User %s not found.".formatted(sub)));
+
+        return mapper.read(found);
     }
 
     @Override

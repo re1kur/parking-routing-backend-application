@@ -35,7 +35,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/code")
-    public ResponseEntity<Void> generateCode(@RequestBody GenerateCodeRequest request) {
+    public ResponseEntity<Void> generateCode(@RequestBody @Valid GenerateCodeRequest request) {
         service.generateCode(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

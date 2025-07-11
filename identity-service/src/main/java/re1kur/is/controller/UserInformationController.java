@@ -1,5 +1,6 @@
 package re1kur.is.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +19,13 @@ public class UserInformationController {
 
     @GetMapping("/info")
     public ResponseEntity<UserDto> getInfo(@RequestHeader("Authorization") String authHeader) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(service.getPersonalInfo(authHeader));
+        UserDto body = service.getPersonalInfo(authHeader);
+        return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 
     @PutMapping("/info/update")
     public ResponseEntity<UserDto> updateInfo(@RequestHeader("Authorization") String authHeader,
-                                              @RequestBody UserInformationPayload payload) {
+                                              @RequestBody @Valid UserInformationPayload payload) {
         UserDto body = service.updateUserInfo(payload, authHeader);
         return ResponseEntity.ok(body);
     }

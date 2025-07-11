@@ -7,4 +7,4 @@ services:
       - 'POSTGRES_PASSWORD=developer'
       - 'POSTGRES_USER=developer'
     ports:
-      - '5435:5432'
+      - '5431:5432'

@@ -1,10 +1,13 @@
 package re1kur.authz.service.impl;
 
 import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import re1kur.core.exception.InvalidTokenException;
 import re1kur.core.other.ParsedURI;
 import re1kur.authz.client.IdentityClient;
 import re1kur.authz.client.JdbcClient;
@@ -24,6 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthzServiceImpl implements AuthzService {
@@ -35,15 +39,19 @@ public class AuthzServiceImpl implements AuthzService {
     private String rolesClaimName;
 
     @Override
-    public JwtToken login(LoginRequest payload) {
-        Credentials credentials = idClient.authenticate(payload);
+    public JwtToken login(LoginRequest request) {
+        log.info("Login request: {}", request.toString());
+        Credentials credentials = idClient.authenticate(request);
         return jwtProvider.getToken(credentials);
     }
 
     @Override
-    public void authorizeRequest(String token, String uri, String methodType) throws ParseException {
-        JWT jwt = SignedJWT.parse(token.replace("Bearer ", ""));
-        String subject = jwt.getJWTClaimsSet().getSubject();
+    public void authorizeRequest(String token, String uri, String methodType) {
+        log.info("Authorize request: {} TO {} [{}]", token, uri, methodType);
+
+        JWT jwt = getBearer(token);
+
+        String subject = getJwtClaimsSet(jwt).getSubject();
         if (!jwtProvider.verifySignature(jwt))
             throw new TokenDidNotPassVerificationException("Token did not pass verification.");
 
@@ -56,7 +64,7 @@ public class AuthzServiceImpl implements AuthzService {
         if (allowedRoles.isEmpty())
             return;
 
-        String rolesClaim = jwt.getJWTClaimsSet().getStringClaim(rolesClaimName);
+        String rolesClaim = getRolesClaim(jwt);
         if (rolesClaim == null)
             throw new UserDoesNotHavePermissionForEndpoint
                     ("User '%s' does not have permission for endpoint '%s' [%s]."
@@ -72,6 +80,30 @@ public class AuthzServiceImpl implements AuthzService {
             throw new UserDoesNotHavePermissionForEndpoint
                     ("User '%s' does not have permission for endpoint '%s' [%s]."
                             .formatted(subject, uri, methodType));
+        }
+    }
+
+    private String getRolesClaim(JWT jwt) {
+        try {
+            return getJwtClaimsSet(jwt).getStringClaim(rolesClaimName);
+        } catch (ParseException e) {
+            throw new InvalidTokenException("Invalid token: %s".formatted(jwt.serialize()));
+        }
+    }
+
+    private static JWTClaimsSet getJwtClaimsSet(JWT jwt) {
+        try {
+            return jwt.getJWTClaimsSet();
+        } catch (ParseException e) {
+            throw new InvalidTokenException("Invalid token: %s".formatted(jwt.serialize()));
+        }
+    }
+
+    private static SignedJWT getBearer(String token) {
+        try {
+            return SignedJWT.parse(token.replace("Bearer ", ""));
+        } catch (ParseException e) {
+            throw new InvalidTokenException("Invalid token: %s".formatted(token));
         }
     }
 
