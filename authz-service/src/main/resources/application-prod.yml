@@ -1,6 +1,22 @@
+#file: noinspection undefined
 spring:
+  datasource:
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    url: ${POSTGRES_URL}
   devtools:
     add-properties: false
   docker:
     compose:
       enabled: false
+  rabbitmq:
+    password: ${RABBITMQ_DEFAULT_USER}
+    username: ${RABBITMQ_DEFAULT_PASS}
+    virtual-host: ${RABBITMQ_DEFAULT_VHOST}
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+
+
+client:
+  identity-service:
+    login-endpoint: http://identity-service:8081/api/auth/login

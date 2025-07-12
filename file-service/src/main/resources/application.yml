@@ -1,8 +1,6 @@
 spring:
   application:
     name: file-service
-  profiles:
-    active: dev
   liquibase:
     change-log: db/changelog/db.changelog-master.yml
   jpa:

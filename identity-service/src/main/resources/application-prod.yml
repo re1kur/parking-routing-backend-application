@@ -1,8 +1,27 @@
+#file: noinspection undefined
 spring:
   docker:
     compose:
       enabled: false
   devtools:
     add-properties: false
+  data:
+    redis:
+      url: ${REDIS_URL}
+  datasource:
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    url: ${POSTGRES_URL}
+  rabbitmq:
+    username: ${RABBITMQ_DEFAULT_USER}
+    password: ${RABBITMQ_DEFAULT_PASS}
+    virtual-host: ${RABBITMQ_DEFAULT_VHOST}
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+
   liquibase:
     change-log: db/changelog/db.changelog-master.yml
+
+policy:
+  endpoints:
+    file-path: /policy/endpoints.yml

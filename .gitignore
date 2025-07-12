@@ -1,0 +1,9 @@
+.idea
+
+
+**/target/
+**/docker-build/*.env
+
+rabbitmq/rabbitmq.env
+
+notification-service/docker-build

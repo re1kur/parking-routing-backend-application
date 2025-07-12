@@ -3,3 +3,5 @@ spring:
     password: developer
     username: developer
     virtual-host: /
+  devtools:
+    add-properties: true

@@ -1,8 +1,7 @@
+#file: noinspection undefined
 spring:
   application:
     name: notification-service
-  profiles:
-    active: default,dev
   mail:
     host: smtp.gmail.com
     port: 465
@@ -10,6 +9,10 @@ spring:
     password: ${GOOGLE_SMTP_PASSWORD}
     ssl:
       enabled: true
+
+server:
+  port: 0
+
 mq:
   listen:
     code-generated-queue: code.generated.queue
@@ -21,6 +24,3 @@ sms-sender:
   api-id: ${SMS_SERVICE_API_ID}
   endpoint: "https://sms.ru/sms/send?api_id=%s&to=7%s&msg=%s&json=1"
   code-text: "%s - code for your login in Parking Routing App."
-
-server:
-  port: 0

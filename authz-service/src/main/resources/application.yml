@@ -1,8 +1,7 @@
+#file: noinspection undefined
 spring:
   application:
     name: authz-service
-  profiles:
-    active: dev
   liquibase:
     change-log: db/changelog/db.changelog-master.yml
 server:

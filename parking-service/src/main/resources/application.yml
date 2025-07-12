@@ -1,8 +1,6 @@
 spring:
   application:
     name: parking-service
-  profiles:
-    active: dev
   jpa:
     open-in-view: false
   sql:

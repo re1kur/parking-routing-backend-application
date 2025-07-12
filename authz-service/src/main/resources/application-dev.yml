@@ -1,8 +1,9 @@
+#file: noinspection undefined
 spring:
   docker:
     compose:
       enabled: true
-      file: authz-service/dev-compose.yml
+      file: authz-service/docker-build/docker-compose.yml
   devtools:
     add-properties: true
   rabbitmq:

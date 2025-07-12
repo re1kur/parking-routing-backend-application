@@ -1,12 +1,12 @@
+#file: noinspection undefined
 spring:
   docker:
     compose:
       enabled: true
-      file: parking-service/dev-compose.yml
+      file: parking-service/docker-build/docker-compose.yml
   devtools:
-    add-properties: false
-  liquibase:
-    change-log: db/changelog/db.changelog-master.yml
+    add-properties: true
+
   jpa:
     show-sql: true
 

@@ -1,14 +1,136 @@
-name: dev-pra
+version: '2.38.1'
+
 services:
   rabbit:
+    container_name: rabbit
+    image: re1kur/pra-rabbit:v1
+    build:
+      dockerfile: rabbitmq/Dockerfile
     env_file: rabbitmq/rabbitmq.env
-    build: rabbitmq/.
-    ports:
-      - "5672:5672"
-      - "15672:15672"
+
   nginx:
+    container_name: nginx
     image: nginx:stable
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     ports:
       - "8080:80"
+
+  #------------------------------------------------------------------------------------------
+
+  authz-redis:
+    container_name: authz-redis
+    image: redis:latest
+  authz-postgres:
+    container_name: authz-postgres
+    image: postgres:17-alpine
+    env_file:
+      - authz-service/docker-build/sql.env
+  authz-service:
+    container_name: authz
+    image: re1kur/pra-authz:v1
+    build:
+      dockerfile: authz-service/docker-build/Dockerfile
+      context: .
+    env_file:
+      - authz-service/docker-build/sql.env
+      - rabbitmq/rabbitmq.env
+    hostname: authz-service
+    depends_on:
+      - rabbit
+      - authz-postgres
+      - authz-redis
+
+  #------------------------------------------------------------------------------------------
+
+  id-redis:
+    container_name: id-redis
+    image: redis:latest
+  id-postgres:
+    container_name: id-postgres
+    image: postgres:17-alpine
+    env_file:
+      - identity-service/docker-build/sql.env
+  identity-service:
+    container_name: id
+    image: re1kur/pra-id:v1
+    volumes:
+      - ./identity-service/policy/endpoints.yml:/policy/endpoints.yml
+    build:
+      dockerfile: identity-service/docker-build/Dockerfile
+      context: .
+    env_file:
+      - identity-service/docker-build/sql.env
+      - rabbitmq/rabbitmq.env
+    hostname: identity-service
+    depends_on:
+      - rabbit
+      - authz-service
+      - id-postgres
+      - id-redis
+
+  #------------------------------------------------------------------------------------------
+
+  fs-postgres:
+    container_name: fs-postgres
+    image: postgres:17-alpine
+    env_file:
+      - file-service/docker-build/sql.env
+  fs-minio:
+    container_name: fs-minio
+    image: quay.io/minio/minio:latest
+    env_file:
+      - file-service/docker-build/minio.env
+    command: server /data --console-address ":9001"
+  file-service:
+    container_name: fs
+    image: re1kur/pra-fs:v1
+    build:
+      dockerfile: file-service/docker-build/Dockerfile
+      context: .
+    env_file:
+      - file-service/docker-build/sql.env
+      - file-service/docker-build/minio.env
+    hostname: file-service
+    depends_on:
+      - fs-postgres
+      - fs-minio
+
+  #------------------------------------------------------------------------------------------
+
+  notification-service:
+    container_name: ns
+    image: re1kur/pra-ns:v1
+    build:
+      dockerfile: notification-service/docker-build/Dockerfile
+      context: .
+    env_file:
+      - notification-service/docker-build/variables.env
+      - rabbitmq/rabbitmq.env
+    depends_on:
+      - rabbit
+  #------------------------------------------------------------------------------------------
+
+  ps-postgres:
+    container_name: ps-postgres
+    image: postgres:17-alpine
+    env_file:
+      - parking-service/docker-build/sql.env
+  parking-service:
+    image: re1kur/pra-ps:v1
+    container_name: ps
+    build:
+      dockerfile: parking-service/docker-build/Dockerfile
+      context: .
+    env_file:
+      - parking-service/docker-build/sql.env
+    depends_on:
+      - authz-service
+      - ps-postgres
+#------------------------------------------------------------------------------------------
+
+networks:
+  pra:
+    external: true
+    driver: bridge
+    name: pra-bridge

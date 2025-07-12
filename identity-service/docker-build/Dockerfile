@@ -8,4 +8,4 @@ FROM eclipse-temurin:24-jre-alpine
 
 COPY --from=build /identity-service/target/is-0.0.1-SNAPSHOT.jar identity-service.jar
 
-ENTRYPOINT ["java", "-jar", "identity-service.jar"]
+ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-jar", "identity-service.jar"]

@@ -1,0 +1,17 @@
+#file: noinspection undefined
+spring:
+  docker:
+    compose:
+      enabled: false
+  devtools:
+    add-properties: false
+  liquibase:
+    change-log: db/changelog/db.changelog-master.yml
+  datasource:
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    url: ${POSTGRES_URL}
+
+client:
+  identity-service:
+    identify-endpoint: http://identity-service:8081/api/users/identify

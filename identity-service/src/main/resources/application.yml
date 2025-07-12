@@ -2,11 +2,8 @@
 spring:
   application:
     name: identity-service
-  profiles:
-    active: dev
   jpa:
     open-in-view: false
-
 server:
   port: 8081
 
@@ -20,7 +17,3 @@ mq:
   routing-key:
     service-registration: service.registered
     verification-code: code.generated
-
-policy:
-  endpoints:
-    file-path: identity-service/src/main/resources/policy/endpoints.yml
