@@ -23,43 +23,43 @@ import java.util.UUID;
 public class CarController {
     private final CarService carService;
 
-    @PostMapping("/register")
+    @PostMapping("/create")
     public ResponseEntity<CarShortDto> registerCar(
             @RequestHeader(name = "Authorization") String token,
             @RequestBody @Valid CarPayload payload
     ) {
-        CarShortDto body = carService.register(payload, token);
+        CarShortDto body = carService.create(payload, token);
         return ResponseEntity.status(HttpStatus.CREATED).body(body);
     }
 
-    @PutMapping("/edit")
+    @PutMapping("/update")
     public ResponseEntity<CarFullDto> editCar(
             @RequestHeader("Authorization") String token,
             @RequestBody @Valid CarUpdatePayload payload
     ) {
-        CarFullDto updated = carService.edit(payload, token);
+        CarFullDto updated = carService.update(payload, token);
         return ResponseEntity.ok(updated);
     }
 
-    @GetMapping("/get-short")
+    @GetMapping("/{id}/short")
     public ResponseEntity<CarShortDto> getShortCar(
-            @RequestParam(name = "id") UUID id
+            @PathVariable(name = "id") UUID id
     ) {
         CarShortDto body = carService.getShort(id);
         return ResponseEntity.ok(body);
     }
 
-    @GetMapping("/get-full")
+    @GetMapping("/{id}/full")
     public ResponseEntity<CarFullDto> getFullCar(
-            @RequestParam(name = "id") UUID id
+            @PathVariable(name = "id") UUID id
     ) {
         CarFullDto body = carService.getFull(id);
         return ResponseEntity.ok(body);
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/{id}/delete")
     public ResponseEntity<Void> deleteCar(
-            @RequestParam(name = "id") UUID id,
+            @PathVariable(name = "id") UUID id,
             @RequestHeader(name = "Authorization") String token
     ) {
         carService.delete(id, token);

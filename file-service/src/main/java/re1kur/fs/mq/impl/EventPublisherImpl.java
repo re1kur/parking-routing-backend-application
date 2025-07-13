@@ -1,4 +1,4 @@
-package re1kur.is.mq.impl;
+package re1kur.fs.mq.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -9,11 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import re1kur.core.event.CodeGeneratedEvent;
 import re1kur.core.event.ServiceRegisteredEvent;
-import re1kur.is.entity.User;
-import re1kur.is.mapper.EventMapper;
-import re1kur.is.mq.EventPublisher;
+import re1kur.fs.mq.EventPublisher;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -24,17 +21,9 @@ import java.nio.file.Path;
 @RequiredArgsConstructor
 public class EventPublisherImpl implements EventPublisher {
     private final RabbitTemplate template;
-    private final EventMapper mapper;
-
-
-    @Value("${mq.exchange}")
-    private String exchange;
 
     @Value("${mq.privacy-policy-exchange}")
     private String privacyPolicyExchange;
-
-    @Value("${mq.routing-key.verification-code}")
-    private String codeGeneratedRoutKey;
 
     @Value("${mq.routing-key.service-registration}")
     private String serviceRegisteredRoutKey;
@@ -43,17 +32,9 @@ public class EventPublisherImpl implements EventPublisher {
     private String filePath;
 
     @Override
-    public void verificationCode(User user, String codeValue) {
-        log.info("Generating verification code event for user: {}", user.getId());
-        CodeGeneratedEvent event = mapper.codeGenerated(user, codeValue);
-        template.convertAndSend(exchange, codeGeneratedRoutKey, event);
-        log.info("Sent verification code event: {}", event);
-    }
-
     @PostConstruct
-    @Override
     public void registrationServicePrivacyPolicy() throws IOException {
-        log.info("Identity-service registered and started. Publishing registration privacy policy to Authz-service.");
+        log.info("File-service registered and started. Publishing registration privacy policy to Authz-service.");
         ObjectMapper ymlMapper = new ObjectMapper(new YAMLFactory());
         ymlMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SnakeCaseStrategy.INSTANCE);
 

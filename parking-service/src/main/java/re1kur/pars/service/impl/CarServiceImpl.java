@@ -41,7 +41,7 @@ public class CarServiceImpl implements CarService {
 
     @Override
     @Transactional
-    public CarShortDto register(CarPayload payload, String token) {
+    public CarShortDto create(CarPayload payload, String token) {
         String sub = JwtExtractor.extractSubFromJwt(token);
         UUID ownerId = UUID.fromString(sub);
         String plate = payload.licensePlate();
@@ -72,7 +72,7 @@ public class CarServiceImpl implements CarService {
 
     @Override
     @Transactional
-    public CarFullDto edit(CarUpdatePayload payload, String token) {
+    public CarFullDto update(CarUpdatePayload payload, String token) {
         String sub = JwtExtractor.extractSubFromJwt(token);
         UUID userId = UUID.fromString(sub);
         String regionCode = payload.regionCode();

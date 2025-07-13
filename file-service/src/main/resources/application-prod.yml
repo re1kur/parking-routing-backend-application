@@ -16,3 +16,7 @@ minio:
   url:
     time-to-live: 7
   default-bucket: default-bucket
+
+policy:
+  endpoints:
+    file-path: /policy/endpoints.yml

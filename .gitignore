@@ -1,7 +1,7 @@
 .idea
 
 
-**/target/
+**/target
 **/docker-build/*.env
 
 rabbitmq/rabbitmq.env
