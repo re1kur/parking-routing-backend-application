@@ -32,6 +32,11 @@ public class EventPublisherImpl implements EventPublisher {
     private String filePath;
 
     @Override
+    public void deleteFileById(String fileId) {
+        log.info("FILE DELETE EVENT: file [{}]", fileId);
+    }
+
+    @Override
     @PostConstruct
     public void registrationServicePrivacyPolicy() throws IOException {
         log.info("Parking-service registered and started. Publishing registration privacy policy to Authz-service.");

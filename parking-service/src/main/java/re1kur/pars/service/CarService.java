@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface CarService {
     CarShortDto create(CarPayload payload, String token);
 
-    CarFullDto update(CarUpdatePayload payload, String token);
+    CarFullDto update(UUID id, CarUpdatePayload payload, String token);
 
     CarShortDto getShort(UUID id);
 
@@ -20,5 +20,5 @@ public interface CarService {
 
     void delete(UUID id, String token);
 
-    List<CarDto> getCarsByToken(String token);
+    List<CarDto> getCarsByOwner(String token);
 }

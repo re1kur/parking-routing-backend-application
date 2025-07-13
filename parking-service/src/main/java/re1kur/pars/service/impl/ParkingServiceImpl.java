@@ -8,96 +8,90 @@ import re1kur.core.dto.ParkingPlaceFullDto;
 import re1kur.core.dto.ParkingPlaceShortDto;
 import re1kur.core.exception.ParkingPlaceAlreadyExistsException;
 import re1kur.core.exception.ParkingPlaceNotFoundException;
-import re1kur.core.exception.UserNotFoundException;
 import re1kur.core.other.JwtExtractor;
 import re1kur.core.payload.ParkingPlacePayload;
-import re1kur.pars.client.IdentityClient;
 import re1kur.pars.entity.ParkingPlace;
-import re1kur.pars.entity.ParkingPlaceInformation;
 import re1kur.pars.mapper.ParkingMapper;
 import re1kur.pars.repository.ParkingPlaceRepository;
 import re1kur.pars.service.ParkingService;
 
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ParkingServiceImpl implements ParkingService {
-    private final ParkingMapper mapper;
-    private final ParkingPlaceRepository parkingRepo;
-    private final IdentityClient identityClient;
+    private final ParkingMapper placeMapper;
+    private final ParkingPlaceRepository placeRepo;
 
     @Override
-    public ParkingPlaceShortDto create(ParkingPlacePayload payload, String token) {
-        String sub = JwtExtractor.extractSubFromJwt(token);
-        UUID userId = UUID.fromString(sub);
+    public ParkingPlaceShortDto create(ParkingPlacePayload payload, String bearer) {
+        UUID userId = UUID.fromString(JwtExtractor.extractSubFromJwt(bearer));
+        log.info("CREATE PARKING-PLACE: user [{}] with payload: {} ", userId, payload);
         Integer number = payload.number();
 
-        if (!identityClient.isExistsById(userId))
-            throw new UserNotFoundException("User '%s' not found.".formatted(sub));
-        log.info("Received request from user with ID '{}' to create parking place: {} ", sub, payload);
-        if (parkingRepo.existsById(number))
+        if (placeRepo.existsById(number))
             throw new ParkingPlaceAlreadyExistsException("Parking place №%d already exists.".formatted(number));
 
-        ParkingPlace saved = initParkingPlace(payload);
+        ParkingPlace mapped = placeMapper.create(payload);
 
-        ParkingPlaceShortDto dto = mapper.readShort(saved);
-        log.info("Created parking place: {}", dto.toString());
+        ParkingPlace saved = placeRepo.save(mapped);
+        log.info("PARKING-PLACE [{}] CREATED.", saved.getNumber());
 
-        return dto;
-    }
-
-    private ParkingPlace initParkingPlace(ParkingPlacePayload payload) {
-        ParkingPlace mapped = mapper.create(payload);
-//        ParkingPlace saved = parkingRepo.save(mapped);
-//        parkingRepo.save(saved);
-        return parkingRepo.save(mapped);
+        return placeMapper.readShort(saved);
     }
 
     @Override
     public ParkingPlaceDto getByNumber(Integer number) {
-        ParkingPlace parkingPlace = parkingRepo.findById(number).orElseThrow(() ->
+        ParkingPlace parkingPlace = placeRepo.findById(number).orElseThrow(() ->
                 new ParkingPlaceNotFoundException("Parking place №%d not found.".formatted(number)));
 
-        return mapper.read(parkingPlace);
-    }
-
-    @Override
-    public ParkingPlaceFullDto getFullByNumber(Integer number) {
-        ParkingPlace parkingPlace = parkingRepo.findById(number).orElseThrow(() ->
-                new ParkingPlaceNotFoundException("Parking place №%d not found.".formatted(number)));
-
-        return mapper.readFull(parkingPlace);
+        return placeMapper.read(parkingPlace);
     }
 
     @Override
     public ParkingPlaceShortDto getShortByNumber(Integer number) {
-        ParkingPlace parkingPlace = parkingRepo.findById(number).orElseThrow(() ->
+        ParkingPlace parkingPlace = placeRepo.findById(number).orElseThrow(() ->
                 new ParkingPlaceNotFoundException("Parking place №%d not found.".formatted(number)));
 
-        return mapper.readShort(parkingPlace);
+        return placeMapper.readShort(parkingPlace);
+    }
+
+    @Override
+    public ParkingPlaceFullDto getFullByNumber(Integer number) {
+        ParkingPlace parkingPlace = placeRepo.findById(number).orElseThrow(() ->
+                new ParkingPlaceNotFoundException("Parking place №%d not found.".formatted(number)));
+
+        return placeMapper.readFull(parkingPlace);
     }
 
     @Override
     public ParkingPlaceDto clear(String token, Integer number) {
-        String sub = JwtExtractor.extractSubFromJwt(token);
-        UUID userId = UUID.fromString(sub);
+//        String sub = JwtExtractor.extractSubFromJwt(token);
+//        UUID userId = UUID.fromString(sub);
+//
+//        log.info("Received request from user with ID '{}' to clear parking place №{}.", userId, number);
+//
+//        ParkingPlace parkingPlace = placeRepo.findById(number).orElseThrow(() ->
+//                new ParkingPlaceNotFoundException("Parking place №%d not found.".formatted(number)));
+//
+//        ParkingPlace cleared = placeMapper.clear(parkingPlace);
+//        placeRepo.save(cleared);
+//
+//        ParkingPlaceDto dto = placeMapper.read(cleared);
+//        log.info("Cleared parking place: {}", dto.toString());
 
-        if (!identityClient.isExistsById(userId))
-            throw new UserNotFoundException("User '%s' not found.".formatted(sub));
-        log.info("Received request from user with ID '{}' to clear parking place №{}.", sub, number);
+//        return dto;
 
-        ParkingPlace parkingPlace = parkingRepo.findById(number).orElseThrow(() ->
-                new ParkingPlaceNotFoundException("Parking place №%d not found.".formatted(number)));
+//        TODO: reimagine method
 
-        ParkingPlace cleared = mapper.clear(parkingPlace);
-        parkingRepo.save(cleared);
+        return null;
+    }
 
-        ParkingPlaceDto dto = mapper.read(cleared);
-        log.info("Cleared parking place: {}", dto.toString());
-
-        return dto;
+    @Override
+    public List<ParkingPlaceDto> getAll() {
+        return ((List<ParkingPlace>) placeRepo.findAll()).stream().map(placeMapper::read).toList();
     }
 
 

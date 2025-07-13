@@ -25,6 +25,6 @@ public class Region {
     @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "region_codes",
             joinColumns = @JoinColumn(name = "id"),
-            inverseJoinColumns = @JoinColumn(name = "code"))
-    private Collection<Code> codes = new ArrayList<>();
+            inverseJoinColumns = @JoinColumn(name = "region_id"))
+    private Collection<RegionCode> regionCodes = new ArrayList<>();
 }

@@ -9,7 +9,7 @@ import re1kur.core.payload.CarPayload;
 import re1kur.core.payload.CarUpdatePayload;
 import re1kur.pars.entity.Car;
 import re1kur.pars.entity.CarInformation;
-import re1kur.pars.entity.Code;
+import re1kur.pars.entity.RegionCode;
 import re1kur.pars.entity.Make;
 import re1kur.pars.mapper.CarMapper;
 
@@ -20,11 +20,11 @@ import java.util.UUID;
 public class CarMapperImpl implements CarMapper {
 
     @Override
-    public Car create(CarPayload payload, Code code, UUID ownerId) {
+    public Car create(CarPayload payload, RegionCode regionCode, UUID ownerId) {
         return Car.builder()
                 .ownerId(ownerId)
                 .licensePlate(payload.licensePlate())
-                .regionCode(code)
+                .regionCode(regionCode)
                 .build();
     }
 
@@ -39,13 +39,13 @@ public class CarMapperImpl implements CarMapper {
     }
 
     @Override
-    public Car update(Car car, CarUpdatePayload payload, Code code, Make make) {
+    public Car update(Car car, CarUpdatePayload payload, RegionCode regionCode, Make make) {
         CarInformation carInformation = car.getCarInformation();
         carInformation.setModel(payload.model());
         carInformation.setColor(payload.color());
         carInformation.setMake(make);
 
-        car.setRegionCode(code);
+        car.setRegionCode(regionCode);
         car.setLicensePlate(payload.licensePlate());
         return car;
     }

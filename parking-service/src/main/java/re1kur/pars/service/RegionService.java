@@ -1,0 +1,18 @@
+package re1kur.pars.service;
+
+import re1kur.core.dto.RegionDto;
+import re1kur.core.payload.RegionPayload;
+
+import java.util.List;
+
+public interface RegionService {
+    RegionDto create(RegionPayload payload, String bearer);
+
+    List<RegionDto> getPage(Integer page, Integer size);
+
+    RegionDto get(Integer regionId);
+
+    RegionDto update(RegionPayload payload, Integer regionId, String bearer);
+
+    void delete(Integer regionId, String bearer);
+}

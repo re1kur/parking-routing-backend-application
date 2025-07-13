@@ -1,8 +1,7 @@
-package re1kur.pars.controller;
+package re1kur.pars.controller.make;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import re1kur.core.dto.MakeDto;
@@ -10,37 +9,35 @@ import re1kur.core.payload.MakePayload;
 import re1kur.pars.service.MakeService;
 
 @RestController
-@RequestMapping("/api/makes")
+@RequestMapping("/api/makes/{id}")
 @RequiredArgsConstructor
 public class MakeController {
     private final MakeService service;
 
-    @PostMapping("/create")
-    public ResponseEntity<MakeDto> create(@RequestBody @Valid MakePayload payload) {
-        MakeDto body = service.create(payload);
-        return ResponseEntity.status(HttpStatus.CREATED).body(body);
-    }
-
-    @GetMapping("/get")
-    public ResponseEntity<MakeDto> get(@RequestParam(name = "id") Integer makeId) {
+    @GetMapping("/get") // TODO: edit privacy
+    public ResponseEntity<MakeDto> get(
+            @PathVariable(name = "id") Integer makeId
+    ) {
         MakeDto body = service.get(makeId);
         return ResponseEntity.ok(body);
     }
 
-    @PutMapping("/{id}/update")
+    @PutMapping("/update")
     public ResponseEntity<MakeDto> update(
             @PathVariable(name = "id") Integer makeId,
-            @RequestBody @Valid MakePayload payload
+            @RequestBody @Valid MakePayload payload,
+            @RequestHeader(name = "Authorization") String bearer
     ) {
-        MakeDto body = service.update(payload, makeId);
+        MakeDto body = service.update(payload, makeId, bearer);
         return ResponseEntity.ok(body);
     }
 
-    @DeleteMapping("/{id}/delete")
+    @DeleteMapping("/delete")
     public ResponseEntity<Void> delete(
-            @PathVariable(name = "id") Integer makeId
+            @PathVariable(name = "id") Integer makeId,
+            @RequestHeader(name = "Authorization") String bearer
     ) {
-        service.delete(makeId);
+        service.delete(makeId, bearer);
         return ResponseEntity.noContent().build();
     }
 }

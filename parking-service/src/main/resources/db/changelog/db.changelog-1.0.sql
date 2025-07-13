@@ -55,3 +55,6 @@ CREATE TABLE IF NOT EXISTS car_images
 
 --changeset re1kur:7
 CREATE INDEX idx_owner_id ON cars (owner_id);
+
+--changeset re1kur:8
+CREATE INDEX idx_license_plate_region ON cars (license_plate, region_code);

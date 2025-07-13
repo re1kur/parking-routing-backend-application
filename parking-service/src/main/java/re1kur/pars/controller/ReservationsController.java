@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/reservations")
 @RequiredArgsConstructor
-public class ReservationController {
+public class ReservationsController {
     private final ReservationService service;
 
     @PostMapping("create")

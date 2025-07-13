@@ -15,13 +15,13 @@ import java.util.Collection;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Code {
+public class RegionCode {
     @Id
     private String code;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Region region;
 
-    @OneToMany(mappedBy = "regionCode")
+    @OneToMany(mappedBy = "codes")
     private Collection<Car> cars = new ArrayList<>();
 }

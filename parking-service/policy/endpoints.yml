@@ -82,7 +82,7 @@ policies: [
     roles: [ "USER" ]
   },
   {
-    method_name: "/api/cars/update",
+    method_name: "/api/cars/{id}/update",
     method_type: "PUT",
     roles: [ "USER" ]
   },

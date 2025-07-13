@@ -11,16 +11,15 @@ import re1kur.core.exception.*;
 import re1kur.core.other.JwtExtractor;
 import re1kur.core.payload.CarPayload;
 import re1kur.core.payload.CarUpdatePayload;
-import re1kur.pars.client.IdentityClient;
 import re1kur.pars.entity.Car;
 import re1kur.pars.entity.CarInformation;
-import re1kur.pars.entity.Code;
+import re1kur.pars.entity.RegionCode;
 import re1kur.pars.entity.Make;
 import re1kur.pars.mapper.CarInformationMapper;
 import re1kur.pars.mapper.CarMapper;
 import re1kur.pars.repository.CarInformationRepository;
 import re1kur.pars.repository.CarRepository;
-import re1kur.pars.repository.CodeRepository;
+import re1kur.pars.repository.RegionCodeRepository;
 import re1kur.pars.repository.MakeRepository;
 import re1kur.pars.service.CarService;
 
@@ -31,11 +30,10 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class CarServiceImpl implements CarService {
-    private final IdentityClient identityClient;
     private final CarMapper carMapper;
     private final CarRepository carRepo;
     private final CarInformationRepository carInfoRepo;
-    private final CodeRepository codeRepo;
+    private final RegionCodeRepository codeRepo;
     private final CarInformationMapper carInfoMapper;
     private final MakeRepository makeRepo;
 
@@ -48,10 +46,9 @@ public class CarServiceImpl implements CarService {
         String code = payload.regionCode();
         Integer makeId = payload.makeId();
 
-        if (!identityClient.isExistsById(ownerId))
-            throw new UserNotFoundException("User '%s' not found.".formatted(sub));
-        log.info("Received request from '{}' to register car: {} ", sub, payload);
-        Code regionCode = codeRepo.findById(code).orElseThrow(() ->
+        log.info("CREATE CAR {} by user [{}]", payload, sub);
+
+        RegionCode regionCode = codeRepo.findById(code).orElseThrow(() ->
                 new CodeNotFoundException("Region code '%s' not found.".formatted(code)));
         Make make = makeRepo.findById(makeId).orElseThrow(() ->
                 new MakeNotFoundException("Make with ID '%d' not found.".formatted(makeId)));
@@ -65,22 +62,19 @@ public class CarServiceImpl implements CarService {
         carInfoRepo.save(carInfoMapped);
 
         CarShortDto registered = carMapper.readShort(saved);
-        log.info("Car registered: {}", registered.toString());
+        log.info("CREATED CAR [{}] by user [{}]", registered.id(), sub);
 
         return registered;
     }
 
     @Override
     @Transactional
-    public CarFullDto update(CarUpdatePayload payload, String token) {
+    public CarFullDto update(UUID carId, CarUpdatePayload payload, String token) {
         String sub = JwtExtractor.extractSubFromJwt(token);
         UUID userId = UUID.fromString(sub);
         String regionCode = payload.regionCode();
         Integer makeId = payload.makeId();
-        UUID carId = payload.carId();
 
-        if (!identityClient.isExistsById(userId))
-            throw new UserNotFoundException("User '%s' not found.".formatted(sub));
         log.info("Received request from user with ID '{}' to edit car: {} ", sub, payload);
 
         Car found = carRepo.findById(carId).orElseThrow(() ->
@@ -89,7 +83,7 @@ public class CarServiceImpl implements CarService {
         if (!userId.equals(found.getOwnerId())) throw new UserDoesNotHavePermissionForEndpoint(
                 "User '%s' does not have permission to edit not own car.".formatted(userId));
 
-        Code code = found.getRegionCode();
+        RegionCode code = found.getRegionCode();
         Make make = found.getCarInformation().getMake();
 
         if (!found.getRegionCode().getCode().equals(regionCode)) {
@@ -114,7 +108,7 @@ public class CarServiceImpl implements CarService {
         log.info("Request to get a short-dto car with ID '{}'.", id);
 
         Car car = carRepo.findById(id).orElseThrow(() ->
-                new CarNotFoundException("Car with ID '%s' not found.'"));
+                new CarNotFoundException("Car with ID '%s' not found.'".formatted(id)));
 
         CarShortDto dto = carMapper.readShort(car);
         log.info("Response short-dto car: {}", dto.toString());
@@ -141,8 +135,6 @@ public class CarServiceImpl implements CarService {
         String sub = JwtExtractor.extractSubFromJwt(token);
         UUID userId = UUID.fromString(sub);
 
-        if (!identityClient.isExistsById(userId))
-            throw new UserNotFoundException("User '%s' not found.".formatted(sub));
         log.info("Received request from user[{}] to delete car[{}]", userId, carId);
 
         Car found = carRepo.findById(carId).orElseThrow(() ->
@@ -155,7 +147,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public List<CarDto> getCarsByToken(String token) {
+    public List<CarDto> getCarsByOwner(String token) {
         String sub = JwtExtractor.extractSubFromJwt(token);
         UUID userId = UUID.fromString(sub);
 

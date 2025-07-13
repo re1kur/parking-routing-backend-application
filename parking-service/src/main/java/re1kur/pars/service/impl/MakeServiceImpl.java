@@ -2,15 +2,20 @@ package re1kur.pars.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import re1kur.core.dto.MakeDto;
 import re1kur.core.exception.MakeAlreadyExistsException;
 import re1kur.core.exception.MakeNotFoundException;
+import re1kur.core.other.JwtExtractor;
 import re1kur.core.payload.MakePayload;
 import re1kur.pars.entity.Make;
 import re1kur.pars.mapper.MakeMapper;
 import re1kur.pars.repository.MakeRepository;
 import re1kur.pars.service.MakeService;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -20,8 +25,9 @@ public class MakeServiceImpl implements MakeService {
     private final MakeMapper mapper;
 
     @Override
-    public MakeDto create(MakePayload payload) {
-        log.info("CREATE MAKE: {}", payload);
+    public MakeDto create(MakePayload payload, String bearer) {
+        String sub = JwtExtractor.extractSubFromJwt(bearer);
+        log.info("CREATE MAKE: {} by user [{}]", payload, sub);
 
         String name = payload.name();
 
@@ -46,8 +52,9 @@ public class MakeServiceImpl implements MakeService {
     }
 
     @Override
-    public MakeDto update(MakePayload payload, Integer makeId) {
-        log.info("UPDATE MAKE: {}", payload);
+    public MakeDto update(MakePayload payload, Integer makeId, String bearer) {
+        String sub = JwtExtractor.extractSubFromJwt(bearer);
+        log.info("UPDATE MAKE: {} by user [{}]", payload, sub);
 
         String name = payload.name();
 
@@ -68,12 +75,19 @@ public class MakeServiceImpl implements MakeService {
     }
 
     @Override
-    public void delete(Integer makeId) {
-        log.info("DELETE MAKE: ID [{}]", makeId);
+    public void delete(Integer makeId, String bearer) {
+        String sub = JwtExtractor.extractSubFromJwt(bearer);
+        log.info("DELETE MAKE: ID [{}] by user [{}]", makeId, sub);
 
         Make make = repo.findById(makeId).orElseThrow(() -> new MakeNotFoundException(
                 "Make with ID [%d] was not found.".formatted(makeId)));
 
         repo.delete(make);
+    }
+
+    @Override
+    public List<MakeDto> getPage(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return repo.findAll(pageable).map(mapper::read).stream().toList();
     }
 }

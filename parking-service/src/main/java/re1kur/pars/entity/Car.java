@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -27,15 +28,19 @@ public class Car {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "region_code")
-    private Code regionCode;
+    private RegionCode regionCode;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id")
     private CarInformation carInformation;
 
-    @ElementCollection
-    @CollectionTable(name = "car_images",
-                joinColumns = @JoinColumn(name = "car_id"))
-    @Column(name = "file_id")
-    private Set<String> imageIds = new HashSet<>();
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "car_images",
+    joinColumns = @JoinColumn(name = "id"),
+    inverseJoinColumns = @JoinColumn(name = "car_id"))
+    private Set<CarImage> images = new HashSet<>();
+
+    public boolean isOwner(UUID userId) {
+        return Objects.equals(ownerId, userId);
+    }
 }

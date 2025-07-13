@@ -51,7 +51,8 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public String getUrl(String id) {
-        File file = repo.findById(id).orElseThrow(() -> new FileNotFoundException("File with id '%s' does not exist.".formatted(id)));
+        File file = repo.findById(id).orElseThrow(() ->
+                new FileNotFoundException("File with id '%s' does not exist.".formatted(id)));
         if (ZonedDateTime.now().isAfter(file.getUrlExpiresAt().toInstant().atZone(ZoneId.systemDefault()))) {
             file = updateUrl(file);
         }
