@@ -110,6 +110,8 @@ services:
     env_file:
       - file-service/docker-build/minio.env
     command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
     networks:
       - pra
   file-service:

@@ -9,10 +9,12 @@ import re1kur.core.exception.*;
 import re1kur.core.payload.GenerateCodeRequest;
 import re1kur.core.payload.LoginRequest;
 import re1kur.core.payload.UserPayload;
+import re1kur.is.entity.Role;
 import re1kur.is.entity.User;
 import re1kur.is.entity.UserInformation;
 import re1kur.is.mapper.UserMapper;
 import re1kur.is.mq.EventPublisher;
+import re1kur.is.repository.sql.RoleRepository;
 import re1kur.is.repository.sql.UserRepository;
 import re1kur.is.service.AuthService;
 import re1kur.is.service.CodeService;
@@ -24,6 +26,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     private final UserRepository repo;
+    private final RoleRepository roleRepo;
     private final EventPublisher publisher;
     private final UserMapper mapper;
     private final CodeService codeService;
@@ -37,7 +40,11 @@ public class AuthServiceImpl implements AuthService {
         if (repo.existsByPhoneNumber(payload.phoneNumber()))
             throw new PhoneNumberAlreadyRegisteredException(
                     "User with phone number +7%s already registered.".formatted(payload.phoneNumber()));
+
         User mapped = mapper.write(payload);
+        Role userRole = roleRepo.findUserRole();
+        mapped.addRole(userRole);
+
         UserInformation info = UserInformation.builder()
                 .firstName(payload.firstName())
                 .lastName(payload.lastName())

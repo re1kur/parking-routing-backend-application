@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -36,4 +37,11 @@ public class User {
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
     private UserInformation information;
+
+    public void addRole(Role userRole) {
+        if (roles == null) {
+            roles = new ArrayList<>();
+        }
+        roles.add(userRole);
+    }
 }
