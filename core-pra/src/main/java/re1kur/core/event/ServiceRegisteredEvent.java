@@ -6,6 +6,7 @@ import java.util.List;
 
 public record ServiceRegisteredEvent(
         String serviceName,
+        String apiPrefix,
         List<PrivacyPolicy> policies
 ) {
 }

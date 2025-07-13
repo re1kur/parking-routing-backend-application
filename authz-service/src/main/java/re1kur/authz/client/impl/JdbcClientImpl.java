@@ -32,7 +32,7 @@ public class JdbcClientImpl implements JdbcClient {
             """;
 
     private static final String INSERT_NEW_SERVICE_SQL_QUERY = """
-            INSERT INTO services (name) VALUES (?)
+            INSERT INTO services (name, api_prefix) VALUES (?, ?)
             ON CONFLICT DO NOTHING
             RETURNING id;
             """;
@@ -54,13 +54,27 @@ public class JdbcClientImpl implements JdbcClient {
             """;
 
     private static final String SELECT_ENDPOINTS_FOR_METHOD_TYPE_SQL_QUERY = """
-            SELECT e.method_name, a.role\s
-              FROM endpoints e
-              JOIN services s ON s.id = e.service_id
+             SELECT e.method_name, a.role\s
+               FROM endpoints e
+               JOIN services s ON s.id = e.service_id
+               JOIN access_rules a ON a.endpoint_id = e.id
+              WHERE s.name = ?
+                AND e.method_type = ?;
+            \s""";
+
+    private static final String SELECT_ENDPOINT_FOR_HOST_AND_NAME_AND_TYPE = """
+            SELECT e.method_name,
+                   a.role
+              FROM services s
+              JOIN endpoints e ON e.service_id = s.id
               JOIN access_rules a ON a.endpoint_id = e.id
              WHERE s.name = ?
+               AND ? LIKE CONCAT(e.method_name, '%')
                AND e.method_type = ?;
-           \s""";
+            """;
+    private static final String FIND_SERVICE_API_PREFIX_FOR_SERVICE_NAME_SQL_QUERY = """
+            SELECT s.api_prefix FROM services s WHERE s.name = ?;
+            """;
 
     @Override
     public Optional<List<String>> findRolesForEndpoint(String service, String endpoint, String type) {
@@ -76,6 +90,41 @@ public class JdbcClientImpl implements JdbcClient {
     }
 
     @Override
+    public Optional<EndpointAccessRule> findEndpoint(String service, String endpoint, String type) {
+        log.info("JDBC FIND ENDPOINT BY service-host: {}, method: {}, method type {}", service, endpoint, type);
+        List<Map<String, Object>> maps = template.queryForList(
+                SELECT_ENDPOINT_FOR_HOST_AND_NAME_AND_TYPE,
+                service,
+                endpoint,
+                type);
+
+        EndpointAccessRule rule = mapEndpoint(maps);
+
+        log.info("JDBC Found: {}", rule == null ? "NULL" : rule);
+        return Optional.ofNullable(rule);
+    }
+
+    private EndpointAccessRule mapEndpoint(List<Map<String, Object>> maps) {
+        if (maps == null || maps.isEmpty()) {
+            return null;
+        }
+        EndpointAccessRule rule = null;
+        for (Map<String, Object> map : maps) {
+            String methodName = (String) map.get("method_name");
+            String role = (String) map.get("role");
+
+            if (rule == null) {
+                rule = new EndpointAccessRule(methodName);
+            }
+
+            if (role != null && !role.isEmpty()) {
+                rule.addRole(role);
+            }
+        }
+        return rule;
+    }
+
+    @Override
     @Transactional
     public void saveEndpointsByService(ServiceRegisteredEvent event) {
         log.info("JDBC saving-updating service privacy policies: {}", event.toString());
@@ -87,7 +136,7 @@ public class JdbcClientImpl implements JdbcClient {
         }
 
         log.info("Inserting service: {}", event.serviceName());
-        Integer serviceId = insertService(event.serviceName());
+        Integer serviceId = insertService(event.serviceName(), event.apiPrefix());
 
         log.info("Service �{}: {}", serviceId, event.serviceName());
 
@@ -99,7 +148,7 @@ public class JdbcClientImpl implements JdbcClient {
             if (policy.roles().isEmpty()) {
                 insertPublicAccessRule(endpointId);
                 log.info("Inserted public policy: {}", policy);
-                return;
+                continue;
             }
             insertPrivateAccessRules(policy.roles(), endpointId);
             log.info("Inserted private policy: {}", policy);
@@ -113,7 +162,16 @@ public class JdbcClientImpl implements JdbcClient {
         return mapEndpoints(maps);
     }
 
+    @Override
+    public String findApiPrefixByServiceName(String service) {
+        return template.queryForObject(FIND_SERVICE_API_PREFIX_FOR_SERVICE_NAME_SQL_QUERY,
+                String.class,
+                service);
+    }
+
     private List<EndpointAccessRule> mapEndpoints(List<Map<String, Object>> maps) {
+        if (maps.isEmpty())
+            return List.of();
         Map<String, EndpointAccessRule> grouped = new HashMap<>();
         for (Map<String, Object> map : maps) {
             String methodName = (String) map.get("method_name");
@@ -156,10 +214,11 @@ public class JdbcClientImpl implements JdbcClient {
         });
     }
 
-    private Integer insertService(String serviceName) {
+    private Integer insertService(String serviceName, String apiPrefix) {
         return template.query(con -> {
             PreparedStatement ps = con.prepareStatement(INSERT_NEW_SERVICE_SQL_QUERY);
             ps.setString(1, serviceName);
+            ps.setString(2, apiPrefix);
             return ps;
         }, rs -> {
             if (rs.next()) return rs.getInt(1);
@@ -178,6 +237,6 @@ public class JdbcClientImpl implements JdbcClient {
                 (rs, rowNum) -> rs.getInt("id"),
                 name
         );
-        return ids.isEmpty() ? null : ids.get(0);
+        return ids.isEmpty() ? null : ids.getFirst();
     }
 }

@@ -10,11 +10,15 @@ spring:
     compose:
       enabled: false
   rabbitmq:
-    password: ${RABBITMQ_DEFAULT_USER}
-    username: ${RABBITMQ_DEFAULT_PASS}
+    username: ${RABBITMQ_DEFAULT_USER}
+    password: ${RABBITMQ_DEFAULT_PASS}
     virtual-host: ${RABBITMQ_DEFAULT_VHOST}
     host: ${RABBITMQ_HOST}
     port: ${RABBITMQ_PORT}
+  data:
+    redis:
+      port: ${REDIS_PORT}
+      host: ${REDIS_HOST}
 
 
 client:

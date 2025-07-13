@@ -4,7 +4,8 @@
 CREATE TABLE IF NOT EXISTS services
 (
     id   SMALLSERIAL PRIMARY KEY,
-    name VARCHAR(32) NOT NULL UNIQUE
+    name VARCHAR(32) NOT NULL UNIQUE,
+    api_prefix VARCHAR(32) NOT NULL UNIQUE
 );
 
 --changeset re1kur:2

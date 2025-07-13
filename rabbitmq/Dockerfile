@@ -1,4 +1,4 @@
-FROM rabbitmq:latest
+FROM rabbitmq:4.1.2-alpine
 
 WORKDIR /etc/rabbitmq
 

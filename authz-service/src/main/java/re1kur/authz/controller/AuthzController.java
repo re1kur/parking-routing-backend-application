@@ -24,7 +24,7 @@ public class AuthzController {
 
     @GetMapping("/authorize")
     private ResponseEntity<Void> authorizeRequest(
-            @RequestHeader(name = "Authorization") String authHeader,
+            @RequestHeader(name = "Authorization", required = false) String authHeader,
             @RequestHeader(name = "X-Original-Service") String service,
             @RequestHeader(name = "X-Original-URI") String uri,
             @RequestHeader(name = "X-Original-Method") String method

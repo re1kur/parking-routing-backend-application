@@ -34,21 +34,21 @@ public class ParkingController {
         return ResponseEntity.ok(body);
     }
 
-    @GetMapping("/{id}/short-information")
+    @GetMapping("/{id}/short")
     public ResponseEntity<ParkingPlaceShortDto> getShortInformationParkingPlace(
             @PathVariable(name = "id") Integer number) {
         ParkingPlaceShortDto body = service.getShortByNumber(number);
         return ResponseEntity.ok(body);
     }
 
-    @GetMapping("/{id}/information")
+    @GetMapping("/{id}")
     public ResponseEntity<ParkingPlaceDto> getInformationParkingPlace(
             @PathVariable(name = "id") Integer number) {
         ParkingPlaceDto body = service.getByNumber(number);
         return ResponseEntity.ok(body);
     }
 
-    @GetMapping("/{id}/full-information")
+    @GetMapping("/{id}/full")
     public ResponseEntity<ParkingPlaceFullDto> getFullInformationParkingPlace(
             @PathVariable(name = "id") Integer number) {
         ParkingPlaceFullDto body = service.getFullByNumber(number);

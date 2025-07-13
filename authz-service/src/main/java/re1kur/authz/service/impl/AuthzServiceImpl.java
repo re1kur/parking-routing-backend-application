@@ -48,22 +48,23 @@ public class AuthzServiceImpl implements AuthzService {
 
     @Override
     public void authorizeRequest(String token, String uri, String methodType, String service) {
+        log.info("AUTHORIZE URI: {}", uri);
         AntPathMatcher matcher = new AntPathMatcher();
         List<String> allowedRoles;
-        log.info("Authorize request: {} TO {} [{}]", token, uri, methodType);
-
-        JWT jwt = getBearer(token);
-
-        String subject = getJwtClaimsSet(jwt).getSubject();
-        if (!jwtProvider.verifySignature(jwt))
-            throw new TokenDidNotPassVerificationException("Token did not pass verification.");
-
         String endpoint = URI.create(uri).getPath();
 
-        Optional<List<String>> optionalRoles = jdbcClient.findRolesForEndpoint(service, endpoint, methodType);
-        if (optionalRoles.isPresent()) {
-            allowedRoles = optionalRoles.get();
-            authorizeRoles(uri, methodType, allowedRoles, jwt, subject);
+        log.info("Authorize request: Token [{}] TO {}{} [{}]", token, service, endpoint, methodType);
+        String prefix = jdbcClient.findApiPrefixByServiceName(service);
+        if (endpoint.startsWith(prefix)) {
+            endpoint = endpoint.replaceFirst(prefix, "/api");
+        }
+        log.info("REPLACED ENDPOINT: {}", endpoint);
+
+        Optional<EndpointAccessRule> optionalEndpoint = jdbcClient.findEndpoint(service, endpoint, methodType);
+        if (optionalEndpoint.isPresent()) {
+            EndpointAccessRule rule = optionalEndpoint.get();
+            allowedRoles = rule.getRoles();
+            authorizeRoles(uri, methodType, allowedRoles, token);
             return;
         }
 
@@ -71,8 +72,9 @@ public class AuthzServiceImpl implements AuthzService {
 
         for (EndpointAccessRule rule : rules) {
             if (matcher.match(rule.getMethodName(), endpoint)) {
+                log.info("MATCH: {}", rule);
                 allowedRoles = rule.getRoles();
-                authorizeRoles(uri, methodType, allowedRoles, jwt, subject);
+                authorizeRoles(uri, methodType, allowedRoles, token);
                 return;
             }
         }
@@ -80,9 +82,15 @@ public class AuthzServiceImpl implements AuthzService {
         throw new EndpointNotFoundException("Endpoint %s [%s] not found.".formatted(uri, methodType));
     }
 
-    private void authorizeRoles(String uri, String methodType, List<String> allowedRoles, JWT jwt, String subject) {
+    private void authorizeRoles(String uri, String methodType, List<String> allowedRoles, String token) {
         if (allowedRoles.isEmpty())
             return;
+
+        JWT jwt = getBearer(token);
+
+        String subject = getJwtClaimsSet(jwt).getSubject();
+        if (!jwtProvider.verifySignature(jwt))
+            throw new TokenDidNotPassVerificationException("Token did not pass verification.");
 
         String rolesClaim = getRolesClaim(jwt);
         if (rolesClaim == null)
@@ -120,6 +128,9 @@ public class AuthzServiceImpl implements AuthzService {
     }
 
     private static SignedJWT getBearer(String token) {
+        if (token == null) {
+            throw new UserDoesNotHavePermissionForEndpoint("This endpoint requires header 'Authorization'.");
+        }
         try {
             return SignedJWT.parse(token.replace("Bearer ", ""));
         } catch (ParseException e) {

@@ -1,4 +1,5 @@
 service_name: identity-service
+api_prefix: /api/identity
 policies: [
   {
     method_name: "/api/users/info",

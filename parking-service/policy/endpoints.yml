@@ -1,4 +1,5 @@
 service_name: parking-service
+api_prefix: /api/parking
 policies: [
   {
     method_name: "/api/places/create",
@@ -11,17 +12,17 @@ policies: [
     roles: [ "MODERATOR", "OPERATOR" ]
   },
   {
-    method_name: "/api/places/{id}/short-information",
+    method_name: "/api/places/{id}/short",
     method_type: "GET",
     roles: [ ]
   },
   {
-    method_name: "/api/places/{id}/information",
+    method_name: "/api/places/{id}",
     method_type: "GET",
     roles: [ ]
   },
   {
-    method_name: "/api/places/{id}/full-information",
+    method_name: "/api/places/{id}/full",
     method_type: "GET",
     roles: [ ]
   },
@@ -38,11 +39,6 @@ policies: [
   {
     method_name: "/api/makes/{id}/update",
     method_type: "PUT",
-    roles: [ "MODERATOR", "OPERATOR" ]
-  },
-  {
-    method_name: "/api/makes/{id}/delete",
-    method_type: "DELETE",
     roles: [ "MODERATOR", "OPERATOR" ]
   },
   {

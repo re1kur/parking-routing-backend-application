@@ -4,6 +4,10 @@ spring:
     compose:
       enabled: true
       file: file-service/docker-build/docker-compose.yml
+  rabbitmq:
+    username: developer
+    password: developer
+    virtual-host: /
 
 minio:
   access-key: developer

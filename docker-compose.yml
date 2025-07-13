@@ -7,10 +7,12 @@ services:
     build:
       dockerfile: rabbitmq/Dockerfile
     env_file: rabbitmq/rabbitmq.env
+    networks:
+      - pra
 
   nginx:
     container_name: nginx
-    image: nginx:stable
+    image: nginx:stable-alpine
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     depends_on:
@@ -20,17 +22,25 @@ services:
       - parking-service
     ports:
       - "8080:80"
+    networks:
+      - pra
 
   #------------------------------------------------------------------------------------------
 
   authz-redis:
     container_name: authz-redis
-    image: redis:latest
+    image: redis:8-alpine3.21
+    networks:
+      - pra
+
   authz-postgres:
     container_name: authz-postgres
     image: postgres:17-alpine
     env_file:
       - authz-service/docker-build/sql.env
+    networks:
+      - pra
+
   authz-service:
     container_name: authz
     image: re1kur/pra-authz:v1
@@ -39,23 +49,32 @@ services:
       context: .
     env_file:
       - authz-service/docker-build/sql.env
+      - authz-service/docker-build/redis.env
       - rabbitmq/rabbitmq.env
     hostname: authz-service
     depends_on:
       - rabbit
       - authz-postgres
       - authz-redis
+    networks:
+      - pra
 
   #------------------------------------------------------------------------------------------
 
   id-redis:
     container_name: id-redis
-    image: redis:latest
+    image: redis:8-alpine3.21
+    networks:
+      - pra
+
   id-postgres:
     container_name: id-postgres
     image: postgres:17-alpine
     env_file:
       - identity-service/docker-build/sql.env
+    networks:
+      - pra
+
   identity-service:
     container_name: id
     image: re1kur/pra-id:v1
@@ -66,13 +85,15 @@ services:
       context: .
     env_file:
       - identity-service/docker-build/sql.env
+      - identity-service/docker-build/redis.env
       - rabbitmq/rabbitmq.env
     hostname: identity-service
     depends_on:
       - rabbit
-      - authz-service
       - id-postgres
       - id-redis
+    networks:
+      - pra
 
   #------------------------------------------------------------------------------------------
 
@@ -81,12 +102,16 @@ services:
     image: postgres:17-alpine
     env_file:
       - file-service/docker-build/sql.env
+    networks:
+      - pra
   fs-minio:
     container_name: fs-minio
     image: quay.io/minio/minio:latest
     env_file:
       - file-service/docker-build/minio.env
     command: server /data --console-address ":9001"
+    networks:
+      - pra
   file-service:
     container_name: fs
     image: re1kur/pra-fs:v1
@@ -104,6 +129,8 @@ services:
       - rabbit
       - fs-postgres
       - fs-minio
+    networks:
+      - pra
 
   #------------------------------------------------------------------------------------------
 
@@ -118,6 +145,9 @@ services:
       - rabbitmq/rabbitmq.env
     depends_on:
       - rabbit
+    networks:
+      - pra
+
   #------------------------------------------------------------------------------------------
 
   ps-postgres:
@@ -125,6 +155,9 @@ services:
     image: postgres:17-alpine
     env_file:
       - parking-service/docker-build/sql.env
+    networks:
+      - pra
+
   parking-service:
     image: re1kur/pra-ps:v1
     container_name: ps
@@ -139,10 +172,13 @@ services:
     depends_on:
       - rabbit
       - ps-postgres
+    networks:
+      - pra
+
 #------------------------------------------------------------------------------------------
 
 networks:
   pra:
-    external: true
+    external: false
     driver: bridge
     name: pra-bridge

@@ -1,13 +1,14 @@
 service_name: file-service
+api_prefix: /api/file
 policies: [
   {
     method_name: "/api/files/upload",
     method_type: "POST",
-    roles: [ ]
+    roles: [ "USER" ]
   },
   {
     method_name: "/api/files/get",
     method_type: "GET",
-    roles: [ ]
+    roles: [ "USER" ]
   }
 ]

@@ -23,7 +23,7 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(InvalidTokenException.class)
     public ResponseEntity<Void> handleInvalidTokenException(InvalidTokenException ex) {
         log.info(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @ExceptionHandler(UserDoesNotHavePermissionForEndpoint.class)
@@ -35,7 +35,7 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(EndpointNotFoundException.class)
     public ResponseEntity<Void> handleEndpointNotFoundException(EndpointNotFoundException ex) {
         log.info(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @ExceptionHandler(TokenDidNotPassVerificationException.class)
@@ -47,6 +47,6 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Void> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         log.info(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }
