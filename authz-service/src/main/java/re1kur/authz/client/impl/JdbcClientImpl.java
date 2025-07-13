@@ -5,14 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import re1kur.core.other.ParsedURI;
+import re1kur.core.other.EndpointAccessRule;
 import re1kur.authz.client.JdbcClient;
 import re1kur.core.dto.PrivacyPolicy;
 import re1kur.core.event.ServiceRegisteredEvent;
 
 import java.sql.PreparedStatement;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -22,51 +21,57 @@ public class JdbcClientImpl implements JdbcClient {
     public static final String SELECT_SERVICE_SQL_QUERY = "SELECT id FROM services WHERE name = ?";
     private final JdbcTemplate template;
 
-    private static String SELECT_ENDPOINT_ROLES_SQL_QUERY = """
+    private static final String SELECT_ENDPOINT_ROLES_SQL_QUERY = """
             SELECT access.role
-                  FROM services s
-                  JOIN endpoints e ON e.service_id = s.id
-                  JOIN access_rules access ON access.endpoint_id = e.id
-                 WHERE s.name = ?
-                   AND e.method_name = ?
-                   AND e.method_type = ?;
+              FROM services s
+              JOIN endpoints e ON e.service_id = s.id
+              JOIN access_rules access ON access.endpoint_id = e.id
+             WHERE s.name = ?
+               AND ? LIKE CONCAT(e.method_name, '%')
+               AND e.method_type = ?;
             """;
-    private static String INSERT_NEW_SERVICE_SQL_QUERY = """
+
+    private static final String INSERT_NEW_SERVICE_SQL_QUERY = """
             INSERT INTO services (name) VALUES (?)
             ON CONFLICT DO NOTHING
             RETURNING id;
             """;
 
-    private static String INSERT_NEW_ENDPOINT_SQL_QUERY = """
+    private static final String INSERT_NEW_ENDPOINT_SQL_QUERY = """
             INSERT INTO endpoints (service_id, method_name, method_type)
             VALUES (?, ?, ?)
             ON CONFLICT DO NOTHING
             RETURNING id;
             """;
 
-    private static String INSERT_PUBLIC_ACCESS_RULE_SQL_QUERY = """
+    private static final String INSERT_PUBLIC_ACCESS_RULE_SQL_QUERY = """
             INSERT INTO access_rules (endpoint_id) VALUES (?)
             ON CONFLICT DO NOTHING;
             """;
-    private static String INSERT_PRIVATE_ACCESS_RULE_SQL_QUERY = """
+    private static final String INSERT_PRIVATE_ACCESS_RULE_SQL_QUERY = """
             INSERT INTO access_rules (endpoint_id, role) VALUES (?, ?)
             ON CONFLICT DO NOTHING;
             """;
 
-    private static String SELECT_SERVICE_ID_SQL_QUERY = """
-            SELECT id FROM services WHERE name = ?;
-            """;
+    private static final String SELECT_ENDPOINTS_FOR_METHOD_TYPE_SQL_QUERY = """
+            SELECT e.method_name, a.role\s
+              FROM endpoints e
+              JOIN services s ON s.id = e.service_id
+              JOIN access_rules a ON a.endpoint_id = e.id
+             WHERE s.name = ?
+               AND e.method_type = ?;
+           \s""";
 
     @Override
-    public Optional<List<String>> findRolesForEndpoint(ParsedURI parsedURI, String methodType) {
-        log.info("service(host): {}, method: {}", parsedURI.getService(), parsedURI.getEndpoint());
+    public Optional<List<String>> findRolesForEndpoint(String service, String endpoint, String type) {
+        log.info("service(host): {}, method: {}", service, endpoint);
         List<String> roles = template.queryForList(
                 SELECT_ENDPOINT_ROLES_SQL_QUERY,
                 String.class,
-                parsedURI.getService(),
-                parsedURI.getEndpoint(),
-                methodType);
-        log.info("roles [{}] for endpoint {}", roles, parsedURI);
+                service,
+                endpoint,
+                type);
+        log.info("roles [{}] for endpoint {}", roles, endpoint);
         return roles.isEmpty() ? Optional.empty() : Optional.of(roles);
     }
 
@@ -84,7 +89,7 @@ public class JdbcClientImpl implements JdbcClient {
         log.info("Inserting service: {}", event.serviceName());
         Integer serviceId = insertService(event.serviceName());
 
-        log.info("Service ¹{}: {}", serviceId, event.serviceName());
+        log.info("Service ï¿½{}: {}", serviceId, event.serviceName());
 
         for (PrivacyPolicy policy : event.policies()) {
             log.info("Current policy: {}", policy.toString());
@@ -99,6 +104,31 @@ public class JdbcClientImpl implements JdbcClient {
             insertPrivateAccessRules(policy.roles(), endpointId);
             log.info("Inserted private policy: {}", policy);
         }
+    }
+
+    @Override
+    public List<EndpointAccessRule> findEndpointsForMethod(String service, String methodType) {
+        List<Map<String, Object>> maps = template
+                .queryForList(SELECT_ENDPOINTS_FOR_METHOD_TYPE_SQL_QUERY, service, methodType);
+        return mapEndpoints(maps);
+    }
+
+    private List<EndpointAccessRule> mapEndpoints(List<Map<String, Object>> maps) {
+        Map<String, EndpointAccessRule> grouped = new HashMap<>();
+        for (Map<String, Object> map : maps) {
+            String methodName = (String) map.get("method_name");
+            String role = (String) map.get("role");
+
+            EndpointAccessRule rule = grouped.get(methodName);
+            if (rule == null) {
+                rule = new EndpointAccessRule(methodName);
+                grouped.put(methodName, rule);
+            }
+            if (role != null && !role.isEmpty())
+                rule.addRole(role);
+        }
+
+        return grouped.values().stream().toList();
     }
 
     private void insertPrivateAccessRules(List<String> roles, int endpointId) {

@@ -13,6 +13,11 @@ services:
     image: nginx:stable
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - file-service
+      - identity-service
+      - authz-service
+      - parking-service
     ports:
       - "8080:80"
 
@@ -85,14 +90,18 @@ services:
   file-service:
     container_name: fs
     image: re1kur/pra-fs:v1
+    volumes:
+      - ./file-service/policy/endpoints.yml:/policy/endpoints.yml
     build:
       dockerfile: file-service/docker-build/Dockerfile
       context: .
     env_file:
       - file-service/docker-build/sql.env
       - file-service/docker-build/minio.env
+      - rabbitmq/rabbitmq.env
     hostname: file-service
     depends_on:
+      - rabbit
       - fs-postgres
       - fs-minio
 
@@ -119,13 +128,16 @@ services:
   parking-service:
     image: re1kur/pra-ps:v1
     container_name: ps
+    volumes:
+      - ./parking-service/policy/endpoints.yml:/policy/endpoints.yml
     build:
       dockerfile: parking-service/docker-build/Dockerfile
       context: .
     env_file:
       - parking-service/docker-build/sql.env
+      - rabbitmq/rabbitmq.env
     depends_on:
-      - authz-service
+      - rabbit
       - ps-postgres
 #------------------------------------------------------------------------------------------
 

@@ -18,6 +18,7 @@ import re1kur.core.payload.LoginRequest;
 import java.time.LocalDateTime;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -49,7 +50,7 @@ class AuthzControllerTest {
     }
 
     @Test
-    void login__ReturnsOk() throws Exception{
+    void login__ReturnsOk() throws Exception {
         LoginRequest request = LoginRequest.builder()
                 .code("123123")
                 .phoneNumber("9999999999")
@@ -62,8 +63,8 @@ class AuthzControllerTest {
                 .build())).thenReturn(expected);
 
         mvc.perform(post(URL + "/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(request)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(expected)));
 
@@ -71,7 +72,7 @@ class AuthzControllerTest {
     }
 
     @Test
-    void login__IdentityClientDidNotIdentified__ReturnsUnauthorized() throws Exception{
+    void login__IdentityClientDidNotIdentified__ReturnsUnauthorized() throws Exception {
         LoginRequest request = LoginRequest.builder()
                 .code("123123")
                 .phoneNumber("9999999999")
@@ -82,7 +83,7 @@ class AuthzControllerTest {
                 .code("123123")
                 .phoneNumber("9999999999")
                 .build())).thenThrow(
-                        new IdentityServiceAuthenticationException("body", HttpStatus.UNAUTHORIZED.value()));
+                new IdentityServiceAuthenticationException("body", HttpStatus.UNAUTHORIZED.value()));
 
         mvc.perform(post(URL + "/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -93,7 +94,7 @@ class AuthzControllerTest {
     }
 
     @Test
-    void login__InvalidPayload__ReturnsBadRequest() throws Exception{
+    void login__InvalidPayload__ReturnsBadRequest() throws Exception {
         LoginRequest request = LoginRequest.builder()
                 .code("")
                 .phoneNumber("")
@@ -112,17 +113,19 @@ class AuthzControllerTest {
         String authHeader = "auth-header";
         String uriHeader = "uri-header";
         String methodHeader = "method-header";
+        String serviceHeader = "service-header";
 
-        doNothing().when(service).authorizeRequest("auth-header", "uri-header", "method-header");
+        doNothing().when(service).authorizeRequest("auth-header", "uri-header", "method-header", "service-header");
 
-        mvc.perform(post(URL + "/authorize")
+        mvc.perform(get(URL + "/authorize")
                         .header(HttpHeaders.AUTHORIZATION, authHeader)
                         .header("X-Original-URI", uriHeader)
                         .header("X-Original-Method", methodHeader)
+                        .header("X-Original-Service", serviceHeader)
                 )
                 .andExpect(status().isOk());
 
-        verify(service, times(1)).authorizeRequest(authHeader, uriHeader, methodHeader);
+        verify(service, times(1)).authorizeRequest(authHeader, uriHeader, methodHeader, serviceHeader);
     }
 
     @Test
@@ -130,17 +133,19 @@ class AuthzControllerTest {
         String authHeader = "auth-header";
         String uriHeader = "uri-header";
         String methodHeader = "method-header";
+        String serviceHeader = "service-header";
 
-        doThrow(InvalidTokenException.class).when(service).authorizeRequest("auth-header", "uri-header", "method-header");
+        doThrow(InvalidTokenException.class).when(service).authorizeRequest("auth-header", "uri-header", "method-header", "service-header");
 
-        mvc.perform(post(URL + "/authorize")
+        mvc.perform(get(URL + "/authorize")
                         .header(HttpHeaders.AUTHORIZATION, authHeader)
                         .header("X-Original-URI", uriHeader)
                         .header("X-Original-Method", methodHeader)
+                        .header("X-Original-Service", serviceHeader)
                 )
                 .andExpect(status().isBadRequest());
 
-        verify(service, times(1)).authorizeRequest(authHeader, uriHeader, methodHeader);
+        verify(service, times(1)).authorizeRequest(authHeader, uriHeader, methodHeader, serviceHeader);
     }
 
     @Test
@@ -148,17 +153,19 @@ class AuthzControllerTest {
         String authHeader = "auth-header";
         String uriHeader = "uri-header";
         String methodHeader = "method-header";
+        String serviceHeader = "service-header";
 
-        doThrow(TokenDidNotPassVerificationException.class).when(service).authorizeRequest("auth-header", "uri-header", "method-header");
+        doThrow(TokenDidNotPassVerificationException.class).when(service).authorizeRequest("auth-header", "uri-header", "method-header", "service-header");
 
-        mvc.perform(post(URL + "/authorize")
+        mvc.perform(get(URL + "/authorize")
                         .header(HttpHeaders.AUTHORIZATION, authHeader)
                         .header("X-Original-URI", uriHeader)
                         .header("X-Original-Method", methodHeader)
+                        .header("X-Original-Service", serviceHeader)
                 )
                 .andExpect(status().isUnauthorized());
 
-        verify(service, times(1)).authorizeRequest(authHeader, uriHeader, methodHeader);
+        verify(service, times(1)).authorizeRequest(authHeader, uriHeader, methodHeader, serviceHeader);
     }
 
     @Test
@@ -166,17 +173,19 @@ class AuthzControllerTest {
         String authHeader = "auth-header";
         String uriHeader = "uri-header";
         String methodHeader = "method-header";
+        String serviceHeader = "service-header";
 
-        doThrow(EndpointNotFoundException.class).when(service).authorizeRequest("auth-header", "uri-header", "method-header");
+        doThrow(EndpointNotFoundException.class).when(service).authorizeRequest("auth-header", "uri-header", "method-header", "service-header");
 
-        mvc.perform(post(URL + "/authorize")
+        mvc.perform(get(URL + "/authorize")
                         .header(HttpHeaders.AUTHORIZATION, authHeader)
                         .header("X-Original-URI", uriHeader)
                         .header("X-Original-Method", methodHeader)
+                        .header("X-Original-Service", serviceHeader)
                 )
                 .andExpect(status().isBadRequest());
 
-        verify(service, times(1)).authorizeRequest(authHeader, uriHeader, methodHeader);
+        verify(service, times(1)).authorizeRequest(authHeader, uriHeader, methodHeader, serviceHeader);
     }
 
     @Test
@@ -184,17 +193,19 @@ class AuthzControllerTest {
         String authHeader = "auth-header";
         String uriHeader = "uri-header";
         String methodHeader = "method-header";
+        String serviceHeader = "service-header";
 
-        doThrow(UserDoesNotHavePermissionForEndpoint.class).when(service).authorizeRequest("auth-header", "uri-header", "method-header");
+        doThrow(UserDoesNotHavePermissionForEndpoint.class).when(service).authorizeRequest("auth-header", "uri-header", "method-header", "service-header");
 
-        mvc.perform(post(URL + "/authorize")
+        mvc.perform(get(URL + "/authorize")
                         .header(HttpHeaders.AUTHORIZATION, authHeader)
                         .header("X-Original-URI", uriHeader)
                         .header("X-Original-Method", methodHeader)
+                        .header("X-Original-Service", serviceHeader)
                 )
                 .andExpect(status().isForbidden());
 
-        verify(service, times(1)).authorizeRequest(authHeader, uriHeader, methodHeader);
+        verify(service, times(1)).authorizeRequest(authHeader, uriHeader, methodHeader, serviceHeader);
     }
 
 }

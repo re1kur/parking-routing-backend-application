@@ -12,7 +12,7 @@ import re1kur.core.payload.ParkingPlacePayload;
 import re1kur.pars.service.ParkingService;
 
 @RestController
-@RequestMapping("/api/parking/place")
+@RequestMapping("/api/places")
 @RequiredArgsConstructor
 public class ParkingController {
     private final ParkingService service;
@@ -25,32 +25,32 @@ public class ParkingController {
         return ResponseEntity.status(HttpStatus.CREATED).body(body);
     }
 
-    @PutMapping("/clear")
+    @PutMapping("/{id}/clear")
     public ResponseEntity<ParkingPlaceDto> clearParkingPlace(
             @RequestHeader(name = "Authorization") String token,
-            @RequestParam(name = "number") Integer number
+            @PathVariable(name = "id") Integer number
     ) {
         ParkingPlaceDto body = service.clear(token, number);
         return ResponseEntity.ok(body);
     }
 
-    @GetMapping("/short-information")
+    @GetMapping("/{id}/short-information")
     public ResponseEntity<ParkingPlaceShortDto> getShortInformationParkingPlace(
-            @RequestParam(name = "number") Integer number) {
+            @PathVariable(name = "id") Integer number) {
         ParkingPlaceShortDto body = service.getShortByNumber(number);
         return ResponseEntity.ok(body);
     }
 
-    @GetMapping("/information")
+    @GetMapping("/{id}/information")
     public ResponseEntity<ParkingPlaceDto> getInformationParkingPlace(
-            @RequestParam(name = "number") Integer number) {
+            @PathVariable(name = "id") Integer number) {
         ParkingPlaceDto body = service.getByNumber(number);
         return ResponseEntity.ok(body);
     }
 
-    @GetMapping("/full-information")
+    @GetMapping("/{id}/full-information")
     public ResponseEntity<ParkingPlaceFullDto> getFullInformationParkingPlace(
-            @RequestParam(name = "number") Integer number) {
+            @PathVariable(name = "id") Integer number) {
         ParkingPlaceFullDto body = service.getFullByNumber(number);
         return ResponseEntity.ok(body);
     }

@@ -7,8 +7,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.AntPathMatcher;
 import re1kur.core.exception.InvalidTokenException;
-import re1kur.core.other.ParsedURI;
+import re1kur.core.other.EndpointAccessRule;
 import re1kur.authz.client.IdentityClient;
 import re1kur.authz.client.JdbcClient;
 import re1kur.core.dto.Credentials;
@@ -46,7 +47,9 @@ public class AuthzServiceImpl implements AuthzService {
     }
 
     @Override
-    public void authorizeRequest(String token, String uri, String methodType) {
+    public void authorizeRequest(String token, String uri, String methodType, String service) {
+        AntPathMatcher matcher = new AntPathMatcher();
+        List<String> allowedRoles;
         log.info("Authorize request: {} TO {} [{}]", token, uri, methodType);
 
         JWT jwt = getBearer(token);
@@ -55,12 +58,29 @@ public class AuthzServiceImpl implements AuthzService {
         if (!jwtProvider.verifySignature(jwt))
             throw new TokenDidNotPassVerificationException("Token did not pass verification.");
 
-        ParsedURI parsedURI = new ParsedURI(URI.create(uri));
-        Optional<List<String>> optionalRoles = jdbcClient.findRolesForEndpoint(parsedURI, methodType);
-        if (optionalRoles.isEmpty())
-            throw new EndpointNotFoundException("Endpoint %s [%s] not found.".formatted(uri, methodType));
+        String endpoint = URI.create(uri).getPath();
 
-        List<String> allowedRoles = optionalRoles.get();
+        Optional<List<String>> optionalRoles = jdbcClient.findRolesForEndpoint(service, endpoint, methodType);
+        if (optionalRoles.isPresent()) {
+            allowedRoles = optionalRoles.get();
+            authorizeRoles(uri, methodType, allowedRoles, jwt, subject);
+            return;
+        }
+
+        List<EndpointAccessRule> rules = jdbcClient.findEndpointsForMethod(service, methodType);
+
+        for (EndpointAccessRule rule : rules) {
+            if (matcher.match(rule.getMethodName(), endpoint)) {
+                allowedRoles = rule.getRoles();
+                authorizeRoles(uri, methodType, allowedRoles, jwt, subject);
+                return;
+            }
+        }
+
+        throw new EndpointNotFoundException("Endpoint %s [%s] not found.".formatted(uri, methodType));
+    }
+
+    private void authorizeRoles(String uri, String methodType, List<String> allowedRoles, JWT jwt, String subject) {
         if (allowedRoles.isEmpty())
             return;
 

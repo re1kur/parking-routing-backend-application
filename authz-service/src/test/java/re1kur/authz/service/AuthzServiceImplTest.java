@@ -27,7 +27,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -53,6 +52,7 @@ class AuthzServiceImplTest {
     @Test
     void authorizeRequest__ValidRequest__DoesNotThrowException() throws Exception {
         String token = "Bearer valid-token";
+        String host = "service";
         String uri = "/api/data";
         String method = "GET";
 
@@ -64,13 +64,13 @@ class AuthzServiceImplTest {
 
         when(jwtProvider.verifySignature(any())).thenReturn(true);
         when(signedJWT.getJWTClaimsSet()).thenReturn(claimsSet);
-        when(jdbcClient.findRolesForEndpoint(any(), eq(method)))
+        when(jdbcClient.findRolesForEndpoint("service", "/api/data", "GET"))
                 .thenReturn(Optional.of(List.of("ADMIN", "MODERATOR")));
 
         try (MockedStatic<SignedJWT> staticMock = mockStatic(SignedJWT.class)) {
             staticMock.when(() -> SignedJWT.parse("valid-token")).thenReturn(signedJWT);
 
-            assertDoesNotThrow(() -> service.authorizeRequest(token, uri, method));
+            assertDoesNotThrow(() -> service.authorizeRequest(token, uri, method, host));
         }
     }
 
@@ -82,7 +82,7 @@ class AuthzServiceImplTest {
             staticMock.when(() -> SignedJWT.parse("invalid-token")).thenThrow(new ParseException("bad token", 0));
 
             assertThrows(InvalidTokenException.class,
-                    () -> service.authorizeRequest(token, "/api/data", "GET"));
+                    () -> service.authorizeRequest(token, "/api/data", "GET", "service"));
         }
     }
 
@@ -98,7 +98,7 @@ class AuthzServiceImplTest {
             when(jwtProvider.verifySignature(signedJWT)).thenReturn(false);
 
             assertThrows(TokenDidNotPassVerificationException.class,
-                    () -> service.authorizeRequest(token, "/api/data", "GET"));
+                    () -> service.authorizeRequest(token, "/api/data", "GET", "service"));
         }
     }
 
@@ -112,10 +112,10 @@ class AuthzServiceImplTest {
             staticMock.when(() -> SignedJWT.parse("token")).thenReturn(signedJWT);
             when(signedJWT.getJWTClaimsSet()).thenReturn(claimsSet);
             when(jwtProvider.verifySignature(signedJWT)).thenReturn(true);
-            when(jdbcClient.findRolesForEndpoint(any(), eq("GET"))).thenReturn(Optional.empty());
+            when(jdbcClient.findRolesForEndpoint("service", "/api/data", "GET")).thenReturn(Optional.empty());
 
             assertThrows(EndpointNotFoundException.class,
-                    () -> service.authorizeRequest(token, "/api/data", "GET"));
+                    () -> service.authorizeRequest(token, "/api/data", "GET", "service"));
         }
     }
 
@@ -131,11 +131,11 @@ class AuthzServiceImplTest {
             staticMock.when(() -> SignedJWT.parse("token")).thenReturn(signedJWT);
             when(signedJWT.getJWTClaimsSet()).thenReturn(claimsSet);
             when(jwtProvider.verifySignature(signedJWT)).thenReturn(true);
-            when(jdbcClient.findRolesForEndpoint(any(), eq("GET")))
+            when(jdbcClient.findRolesForEndpoint("service", "/api/data", "GET"))
                     .thenReturn(Optional.of(List.of("ADMIN")));
 
             assertThrows(UserDoesNotHavePermissionForEndpoint.class,
-                    () -> service.authorizeRequest(token, "/api/data", "GET"));
+                    () -> service.authorizeRequest(token, "/api/data", "GET", "service"));
         }
     }
 
@@ -152,11 +152,11 @@ class AuthzServiceImplTest {
             staticMock.when(() -> SignedJWT.parse("token")).thenReturn(signedJWT);
             when(signedJWT.getJWTClaimsSet()).thenReturn(claimsSet);
             when(jwtProvider.verifySignature(signedJWT)).thenReturn(true);
-            when(jdbcClient.findRolesForEndpoint(any(), eq("GET")))
+            when(jdbcClient.findRolesForEndpoint("service", "/api/data", "GET"))
                     .thenReturn(Optional.of(List.of("ADMIN")));
 
             assertThrows(UserDoesNotHavePermissionForEndpoint.class,
-                    () -> service.authorizeRequest(token, "/api/data", "GET"));
+                    () -> service.authorizeRequest(token, "/api/data", "GET", "service"));
         }
     }
 
@@ -173,10 +173,10 @@ class AuthzServiceImplTest {
             staticMock.when(() -> SignedJWT.parse("token")).thenReturn(signedJWT);
             when(signedJWT.getJWTClaimsSet()).thenReturn(claimsSet);
             when(jwtProvider.verifySignature(signedJWT)).thenReturn(true);
-            when(jdbcClient.findRolesForEndpoint(any(), eq("GET")))
+            when(jdbcClient.findRolesForEndpoint("service", "/api/data", "GET"))
                     .thenReturn(Optional.of(List.of()));
 
-            assertDoesNotThrow(() -> service.authorizeRequest(token, "/api/data", "GET"));
+            assertDoesNotThrow(() -> service.authorizeRequest(token, "/api/data", "GET", "service"));
         }
     }
 

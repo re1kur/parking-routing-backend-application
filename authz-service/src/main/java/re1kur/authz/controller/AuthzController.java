@@ -14,7 +14,7 @@ import re1kur.core.payload.LoginRequest;
 public class AuthzController {
     private final AuthzService authzService;
 
-    @PostMapping("login")
+    @PostMapping("/login")
     private ResponseEntity<JwtToken> login(
             @RequestBody @Valid LoginRequest request
     ) {
@@ -22,14 +22,14 @@ public class AuthzController {
         return ResponseEntity.ok(token);
     }
 
-    @PostMapping("authorize")
+    @GetMapping("/authorize")
     private ResponseEntity<Void> authorizeRequest(
-            @RequestHeader("Authorization") String authHeader,
+            @RequestHeader(name = "Authorization") String authHeader,
+            @RequestHeader(name = "X-Original-Service") String service,
             @RequestHeader(name = "X-Original-URI") String uri,
             @RequestHeader(name = "X-Original-Method") String method
     ) {
-        authzService.authorizeRequest(authHeader, uri, method);
+        authzService.authorizeRequest(authHeader, uri, method, service);
         return ResponseEntity.ok().build();
     }
-
 }

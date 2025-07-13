@@ -7,6 +7,12 @@ spring:
   docker:
     compose:
       enabled: false
+  rabbitmq:
+    username: ${RABBITMQ_DEFAULT_USER}
+    password: ${RABBITMQ_DEFAULT_PASS}
+    virtual-host: ${RABBITMQ_DEFAULT_VHOST}
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
 
 minio:
   access-key: ${MINIO_ROOT_USER}
@@ -16,3 +22,7 @@ minio:
   url:
     time-to-live: 7
   default-bucket: default-bucket
+
+policy:
+  endpoints:
+    file-path: /policy/endpoints.yml

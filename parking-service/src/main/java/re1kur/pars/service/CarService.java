@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.UUID;
 
 public interface CarService {
-    CarShortDto register(CarPayload payload, String token);
+    CarShortDto create(CarPayload payload, String token);
 
-    CarFullDto edit(CarUpdatePayload payload, String token);
+    CarFullDto update(CarUpdatePayload payload, String token);
 
     CarShortDto getShort(UUID id);
 

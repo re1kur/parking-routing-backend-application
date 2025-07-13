@@ -9,20 +9,5 @@ policies: [
     method_name: "/api/users/info/update",
     method_type: "PUT",
     roles: [ "USER" ]
-  },
-  {
-    method_name: "/api/auth/register",
-    method_type: "POST",
-    roles: [ ]
-  },
-  {
-    method_name: "/api/auth/login",
-    method_type: "POST",
-    roles: [ ]
-  },
-  {
-    method_name: "/api/auth/code",
-    method_type: "POST",
-    roles: [ ]
   }
 ]

@@ -1,0 +1,13 @@
+service_name: file-service
+policies: [
+  {
+    method_name: "/api/files/upload",
+    method_type: "POST",
+    roles: [ ]
+  },
+  {
+    method_name: "/api/files/get",
+    method_type: "GET",
+    roles: [ ]
+  }
+]

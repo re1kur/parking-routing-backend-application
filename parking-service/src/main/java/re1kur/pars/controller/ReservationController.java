@@ -17,7 +17,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/parking/reservation")
+@RequestMapping("/api/reservations")
 @RequiredArgsConstructor
 public class ReservationController {
     private final ReservationService service;
@@ -55,7 +55,7 @@ public class ReservationController {
         return ResponseEntity.ok(body);
     }
 
-    @GetMapping("/list/today")
+    @GetMapping("/all-list/today")
     public ResponseEntity<List<PlaceReservationsDto>> getListReservationsForToday(
     ) {
         List<PlaceReservationsDto> body = service.getListForToday();

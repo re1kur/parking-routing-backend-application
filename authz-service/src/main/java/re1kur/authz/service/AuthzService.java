@@ -7,7 +7,7 @@ import re1kur.core.payload.LoginRequest;
 public interface AuthzService {
     JwtToken login(LoginRequest payload);
 
-    void authorizeRequest(String token, String uri, String method);
+    void authorizeRequest(String token, String uri, String method, String service);
 
     void registerPrivacyPolicy(ServiceRegisteredEvent event);
 }
