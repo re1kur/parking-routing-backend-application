@@ -18,10 +18,6 @@ spring:
     host: ${RABBITMQ_HOST}
     port: ${RABBITMQ_PORT}
 
-client:
-  identity-service:
-    identify-endpoint: http://identity-service:8081/api/users/identify
-
 policy:
   endpoints:
     file-path: /policy/endpoints.yml

@@ -1,4 +1,4 @@
-package re1kur.pars.service;
+package re1kur.pars.service.other;
 
 import re1kur.core.dto.MakeDto;
 import re1kur.core.payload.MakePayload;

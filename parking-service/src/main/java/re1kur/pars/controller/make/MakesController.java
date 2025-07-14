@@ -1,13 +1,14 @@
 package re1kur.pars.controller.make;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import re1kur.core.dto.MakeDto;
 import re1kur.core.payload.MakePayload;
-import re1kur.pars.service.MakeService;
+import re1kur.pars.service.other.MakeService;
 
 import java.util.List;
 
@@ -29,8 +30,8 @@ public class MakesController {
     // TODO: add to privacy
     @GetMapping("/list")
     public ResponseEntity<List<MakeDto>> getList(
-        @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
-        @RequestParam(name = "size", required = false, defaultValue = "10") Integer size
+            @RequestParam(name = "page", required = false, defaultValue = "0") @PositiveOrZero Integer page,
+            @RequestParam(name = "size", required = false, defaultValue = "10") Integer size
     ) {
         List<MakeDto> body = service.getPage(page, size);
         return ResponseEntity.ok(body);

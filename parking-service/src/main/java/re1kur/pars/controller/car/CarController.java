@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import re1kur.core.dto.CarFullDto;
 import re1kur.core.dto.CarShortDto;
 import re1kur.core.payload.CarUpdatePayload;
-import re1kur.pars.service.CarService;
+import re1kur.pars.service.car.CarService;
 
 import java.util.UUID;
 

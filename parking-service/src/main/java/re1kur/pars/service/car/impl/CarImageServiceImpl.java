@@ -1,4 +1,4 @@
-package re1kur.pars.service.impl;
+package re1kur.pars.service.car.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,13 +9,13 @@ import re1kur.core.exception.FileNotFoundException;
 import re1kur.core.exception.UserDoesNotHavePermissionForEndpoint;
 import re1kur.core.other.JwtExtractor;
 import re1kur.core.payload.CarImagePayload;
-import re1kur.pars.entity.Car;
-import re1kur.pars.entity.CarImage;
+import re1kur.pars.entity.car.Car;
+import re1kur.pars.entity.car.CarImage;
 import re1kur.pars.mapper.CarImageMapper;
 import re1kur.pars.mq.EventPublisher;
 import re1kur.pars.repository.CarImageRepository;
 import re1kur.pars.repository.CarRepository;
-import re1kur.pars.service.CarImageService;
+import re1kur.pars.service.car.CarImageService;
 
 import java.util.UUID;
 
@@ -39,7 +39,7 @@ public class CarImageServiceImpl implements CarImageService {
 
         if (!found.isOwner(userId))
             throw new UserDoesNotHavePermissionForEndpoint(
-                    ("User with ID [%s] does not have permission to perform" +
+                    ("User [%s] does not have permission to perform" +
                             " actions with car that does not belong to him.").formatted(userId));
 
         CarImage mapped = imgMapper.create(found, payload);
@@ -61,7 +61,7 @@ public class CarImageServiceImpl implements CarImageService {
 
         if (!found.isOwner(userId))
             throw new UserDoesNotHavePermissionForEndpoint(
-                    ("User with ID [%s] does not have permission to perform" +
+                    ("User [%s] does not have permission to perform" +
                             " actions with car that does not belong to him.").formatted(userId));
 
         CarImage carImage = imgRepo.findByFileId(fileId).orElseThrow(() ->

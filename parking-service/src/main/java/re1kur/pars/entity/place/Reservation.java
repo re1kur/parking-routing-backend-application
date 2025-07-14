@@ -1,4 +1,4 @@
-package re1kur.pars.entity;
+package re1kur.pars.entity.place;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -7,13 +7,13 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "parking_place_reservations")
+@Table(name = "reservations")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString(exclude = "parkingPlace")
-public class ParkingPlaceReservation {
+public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

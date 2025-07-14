@@ -1,10 +1,11 @@
-package re1kur.pars.service.impl;
+package re1kur.pars.service.other.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import re1kur.core.dto.RegionDto;
 import re1kur.core.exception.RegionAlreadyExistsException;
 import re1kur.core.exception.RegionNotFoundException;
@@ -13,7 +14,7 @@ import re1kur.core.payload.RegionPayload;
 import re1kur.pars.entity.Region;
 import re1kur.pars.mapper.RegionMapper;
 import re1kur.pars.repository.RegionRepository;
-import re1kur.pars.service.RegionService;
+import re1kur.pars.service.other.RegionService;
 
 import java.util.List;
 
@@ -25,24 +26,27 @@ public class RegionServiceImpl implements RegionService {
     private final RegionMapper mapper;
 
     @Override
+    @Transactional
     public RegionDto create(RegionPayload payload, String bearer) {
-        String userId = JwtExtractor.extractSubFromJwt(bearer);
-        log.info("CREATE REGION [{}] by user [{}]", payload, userId);
+        String sub = JwtExtractor.extractSubFromJwt(bearer);
+        log.info("CREATE REGION [{}] by user [{}]", payload, sub);
         String name = payload.name();
         if (regRepo.existsByName(name))
-            throw new RegionAlreadyExistsException("Region with name '%s' already exists.".formatted(name));
+            throw new RegionAlreadyExistsException("Region [%s] already exists.".formatted(name));
 
         Region mapped = mapper.create(payload);
         Region saved = regRepo.save(mapped);
 
-        log.info("CREATED REGION [{}] by user [{}]", saved.getId(), userId);
+        log.info("CREATED REGION [{}] by user [{}]", saved.getId(), sub);
         return mapper.read(saved);
     }
 
     @Override
     public List<RegionDto> getPage(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
-        return regRepo.findAll(pageable).map(mapper::read).stream().toList();
+        return regRepo.findAll(pageable)
+                .map(mapper::read)
+                .getContent();
     }
 
     @Override
@@ -54,6 +58,7 @@ public class RegionServiceImpl implements RegionService {
     }
 
     @Override
+    @Transactional
     public RegionDto update(RegionPayload payload, Integer regionId, String bearer) {
         String sub = JwtExtractor.extractSubFromJwt(bearer);
         log.info("UPDATE REGION [{}] to {} by user [{}]", regionId, payload, sub);
@@ -66,24 +71,29 @@ public class RegionServiceImpl implements RegionService {
         boolean nameEq = found.getName().equals(name);
         if (!nameEq) {
             if (regRepo.existsByName(name))
-                throw new RegionAlreadyExistsException("Region with name '%s' already exists.".formatted(name));
+                throw new RegionAlreadyExistsException("Region [%s] already exists.".formatted(name));
         }
 
         Region updated = mapper.update(found, payload);
 
         regRepo.save(updated);
 
+        log.info("UPDATED REGION [{}] by user [{}]", regionId, sub);
         return mapper.read(updated);
     }
 
     @Override
+    @Transactional
     public void delete(Integer regionId, String bearer) {
         String sub = JwtExtractor.extractSubFromJwt(bearer);
         log.info("DELETE REGION [{}] by user [{}]", regionId, sub);
 
-        Region make = regRepo.findById(regionId).orElseThrow(() -> new RegionNotFoundException(
+        Region region = regRepo.findById(regionId).orElseThrow(() -> new RegionNotFoundException(
                 "REGION [%d] was not found.".formatted(regionId)));
 
-        regRepo.delete(make);
+        region.getRegionCodes().clear();
+        regRepo.delete(region);
+
+        log.info("DELETED REGION [{}] by user [{}]", regionId, sub);
     }
 }

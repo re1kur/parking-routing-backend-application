@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import re1kur.core.dto.RegionDto;
 import re1kur.core.payload.RegionPayload;
-import re1kur.pars.service.RegionService;
+import re1kur.pars.service.other.RegionService;
 
 @RestController
 @RequiredArgsConstructor
@@ -15,7 +15,7 @@ import re1kur.pars.service.RegionService;
 public class RegionController {
     private final RegionService service;
 
-    @GetMapping("/get") // TODO: edit privacy
+    @GetMapping // TODO: edit privacy
     public ResponseEntity<RegionDto> get(
             @PathVariable(name = "id") Integer regionId
     ) {

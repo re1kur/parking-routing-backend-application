@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import re1kur.core.dto.ParkingPlaceReservationDto;
 import re1kur.core.dto.PlaceReservationsDto;
 import re1kur.core.payload.ParkingPlaceReservationPayload;
-import re1kur.pars.service.ReservationService;
+import re1kur.pars.service.parking.ReservationService;
 
 import java.time.OffsetDateTime;
 import java.util.List;

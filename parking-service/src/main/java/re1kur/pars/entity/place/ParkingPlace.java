@@ -1,4 +1,4 @@
-package re1kur.pars.entity;
+package re1kur.pars.entity.place;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,5 +26,5 @@ public class ParkingPlace {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "number")
-    private ParkingPlaceReservation reservation;
+    private Reservation reservation;
 }

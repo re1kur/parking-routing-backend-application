@@ -1,0 +1,13 @@
+version: '2.38.1'
+
+services:
+  devpra-rabbit:
+    container_name: devpra-rabbit
+    image: re1kur/pra-rabbit:dev
+    build:
+      dockerfile: Dockerfile
+      context: .
+    env_file: rabbitmq-dev.env
+    ports:
+      - "5672:5672"
+      - "15672:15672"

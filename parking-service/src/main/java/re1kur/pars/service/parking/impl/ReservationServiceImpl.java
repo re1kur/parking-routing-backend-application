@@ -1,4 +1,4 @@
-package re1kur.pars.service.impl;
+package re1kur.pars.service.parking.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -9,12 +9,12 @@ import re1kur.core.dto.PlaceReservationsDto;
 import re1kur.core.exception.ParkingPlaceNotFoundException;
 import re1kur.core.other.JwtExtractor;
 import re1kur.core.payload.ParkingPlaceReservationPayload;
-import re1kur.pars.entity.ParkingPlace;
-import re1kur.pars.entity.ParkingPlaceReservation;
+import re1kur.pars.entity.place.ParkingPlace;
+import re1kur.pars.entity.place.Reservation;
 import re1kur.pars.mapper.ReservationMapper;
 import re1kur.pars.repository.ParkingPlaceRepository;
 import re1kur.pars.repository.ReservationRepository;
-import re1kur.pars.service.ReservationService;
+import re1kur.pars.service.parking.ReservationService;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -37,8 +37,8 @@ public class ReservationServiceImpl implements ReservationService {
         ParkingPlace parkingPlace = parkingRepo.findById(number).orElseThrow(() ->
                 new ParkingPlaceNotFoundException("Parking place №%d not found.".formatted(number)));
 
-        ParkingPlaceReservation mapped = mapper.create(payload, userId, parkingPlace);
-        ParkingPlaceReservation saved = reservationRepo.save(mapped);
+        Reservation mapped = mapper.create(payload, userId, parkingPlace);
+        Reservation saved = reservationRepo.save(mapped);
 
         return mapper.read(saved);
     }

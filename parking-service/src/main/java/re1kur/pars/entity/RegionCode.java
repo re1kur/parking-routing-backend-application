@@ -1,10 +1,8 @@
 package re1kur.pars.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import re1kur.pars.entity.car.Car;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,13 +13,15 @@ import java.util.Collection;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString(exclude = "region")
 public class RegionCode {
     @Id
     private String code;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "region_id")
     private Region region;
 
-    @OneToMany(mappedBy = "codes")
+    @OneToMany(mappedBy = "regionCode")
     private Collection<Car> cars = new ArrayList<>();
 }

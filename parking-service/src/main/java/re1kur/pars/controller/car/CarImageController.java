@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import re1kur.core.dto.CarImageDto;
 import re1kur.core.payload.CarImagePayload;
-import re1kur.pars.service.CarImageService;
+import re1kur.pars.service.car.CarImageService;
 
 import java.util.UUID;
 

@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "regions")
@@ -22,9 +22,9 @@ public class Region {
 
     private String name;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "region_codes",
-            joinColumns = @JoinColumn(name = "id"),
-            inverseJoinColumns = @JoinColumn(name = "region_id"))
-    private Collection<RegionCode> regionCodes = new ArrayList<>();
+    @OneToMany(mappedBy = "region",
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<RegionCode> regionCodes = new ArrayList<>();
 }

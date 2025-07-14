@@ -5,7 +5,7 @@ import re1kur.core.dto.CarFullDto;
 import re1kur.core.dto.CarShortDto;
 import re1kur.core.payload.CarPayload;
 import re1kur.core.payload.CarUpdatePayload;
-import re1kur.pars.entity.Car;
+import re1kur.pars.entity.car.Car;
 import re1kur.pars.entity.RegionCode;
 import re1kur.pars.entity.Make;
 

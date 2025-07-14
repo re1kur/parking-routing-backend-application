@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import re1kur.pars.entity.car.CarInformation;
 
 import java.util.ArrayList;
 import java.util.Collection;

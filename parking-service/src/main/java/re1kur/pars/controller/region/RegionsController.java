@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import re1kur.core.dto.RegionDto;
 import re1kur.core.payload.RegionPayload;
-import re1kur.pars.service.RegionService;
+import re1kur.pars.service.other.RegionService;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ public class RegionsController {
     // todo: add all to policy
     @GetMapping("/list")
     public ResponseEntity<List<RegionDto>> getList(
-            @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
+            @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
             @RequestParam(name = "size", required = false, defaultValue = "10") Integer size
     ) {
         List<RegionDto> body = regionService.getPage(page, size);

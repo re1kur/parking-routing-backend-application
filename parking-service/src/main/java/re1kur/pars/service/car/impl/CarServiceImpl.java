@@ -1,4 +1,4 @@
-package re1kur.pars.service.impl;
+package re1kur.pars.service.car.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,8 +11,8 @@ import re1kur.core.exception.*;
 import re1kur.core.other.JwtExtractor;
 import re1kur.core.payload.CarPayload;
 import re1kur.core.payload.CarUpdatePayload;
-import re1kur.pars.entity.Car;
-import re1kur.pars.entity.CarInformation;
+import re1kur.pars.entity.car.Car;
+import re1kur.pars.entity.car.CarInformation;
 import re1kur.pars.entity.RegionCode;
 import re1kur.pars.entity.Make;
 import re1kur.pars.mapper.CarInformationMapper;
@@ -21,7 +21,7 @@ import re1kur.pars.repository.CarInformationRepository;
 import re1kur.pars.repository.CarRepository;
 import re1kur.pars.repository.RegionCodeRepository;
 import re1kur.pars.repository.MakeRepository;
-import re1kur.pars.service.CarService;
+import re1kur.pars.service.car.CarService;
 
 import java.util.List;
 import java.util.UUID;
@@ -135,15 +135,18 @@ public class CarServiceImpl implements CarService {
         String sub = JwtExtractor.extractSubFromJwt(token);
         UUID userId = UUID.fromString(sub);
 
-        log.info("Received request from user[{}] to delete car[{}]", userId, carId);
+        log.info("DELETE CAR [{}] by user[{}]", carId, userId);
 
         Car found = carRepo.findById(carId).orElseThrow(() ->
                 new CarNotFoundException("Car with ID '%s' not found.".formatted(carId)));
         if (!userId.equals(found.getOwnerId())) throw new UserDoesNotHavePermissionForEndpoint(
-                "User '%s' does not have permission to edit not own car.".formatted(userId));
+                ("User [%s] does not have permission " +
+                        "to perform actions with car that does not belong to him.").formatted(userId));
 
+        found.setCarInformation(null);
+        found.getImages().clear();
         carRepo.delete(found);
-        log.info("Car with ID '{}' deleted.", carId);
+        log.info("DELETED CAR [{}] by user [{}].", carId, userId);
     }
 
     @Override

@@ -4,7 +4,7 @@
 CREATE TABLE IF NOT EXISTS regions
 (
     id   SMALLSERIAL PRIMARY KEY,
-    name VARCHAR(64) NOT NULL
+    name VARCHAR(64) UNIQUE NOT NULL
 );
 
 --changeset re1kur:2

@@ -4,7 +4,7 @@ import re1kur.core.dto.ParkingPlaceDto;
 import re1kur.core.dto.ParkingPlaceFullDto;
 import re1kur.core.dto.ParkingPlaceShortDto;
 import re1kur.core.payload.ParkingPlacePayload;
-import re1kur.pars.entity.ParkingPlace;
+import re1kur.pars.entity.place.ParkingPlace;
 
 public interface ParkingMapper {
     ParkingPlace create(ParkingPlacePayload payload);

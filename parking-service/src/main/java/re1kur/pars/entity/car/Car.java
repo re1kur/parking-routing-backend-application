@@ -1,10 +1,11 @@
-package re1kur.pars.entity;
+package re1kur.pars.entity.car;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import re1kur.pars.entity.RegionCode;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -30,14 +31,16 @@ public class Car {
     @JoinColumn(name = "region_code")
     private RegionCode regionCode;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     @JoinColumn(name = "id")
     private CarInformation carInformation;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "car_images",
-    joinColumns = @JoinColumn(name = "id"),
-    inverseJoinColumns = @JoinColumn(name = "car_id"))
+    @OneToMany(mappedBy = "car",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private Set<CarImage> images = new HashSet<>();
 
     public boolean isOwner(UUID userId) {

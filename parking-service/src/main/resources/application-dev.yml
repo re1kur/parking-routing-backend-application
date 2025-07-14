@@ -3,13 +3,24 @@ spring:
   docker:
     compose:
       enabled: true
-      file: parking-service/docker-build/docker-compose.yml
+      file:
+        - rabbitmq/dev-build/docker-compose.yml
+        - parking-service/docker-build/docker-compose.yml
+  liquibase:
+    change-log: db/changelog/db.changelog-master.yml
   devtools:
     add-properties: true
-
+  datasource:
+    username: developer
+    password: developer
+    url: jdbc:postgresql://localhost:5432/developer
+  rabbitmq:
+    username: developer
+    password: developer
+    virtual-host: /
   jpa:
     show-sql: true
 
-client:
-  identity-service:
-    identify-endpoint: http://localhost:8081/api/users/identify
+policy:
+  endpoints:
+    file-path: ./parking-service/policy/endpoints.yml

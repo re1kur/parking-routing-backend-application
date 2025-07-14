@@ -1,4 +1,4 @@
-package re1kur.pars.service;
+package re1kur.pars.service.parking;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

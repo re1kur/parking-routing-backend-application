@@ -7,10 +7,10 @@ import re1kur.core.dto.ParkingPlaceFullDto;
 import re1kur.core.dto.ParkingPlaceReservationDto;
 import re1kur.core.dto.ParkingPlaceShortDto;
 import re1kur.core.payload.ParkingPlacePayload;
-import re1kur.pars.entity.Car;
-import re1kur.pars.entity.ParkingPlace;
-import re1kur.pars.entity.ParkingPlaceInformation;
-import re1kur.pars.entity.ParkingPlaceReservation;
+import re1kur.pars.entity.car.Car;
+import re1kur.pars.entity.place.ParkingPlace;
+import re1kur.pars.entity.place.ParkingPlaceInformation;
+import re1kur.pars.entity.place.Reservation;
 import re1kur.pars.mapper.ParkingMapper;
 import re1kur.pars.mapper.ReservationMapper;
 
@@ -50,7 +50,7 @@ public class ParkingMapperImpl implements ParkingMapper {
     public ParkingPlaceDto read(ParkingPlace parkingPlace) {
         ParkingPlaceInformation information = parkingPlace.getInformation();
         Car occupantCar = information.getOccupantCar();
-        ParkingPlaceReservation reservation = parkingPlace.getReservation();
+        Reservation reservation = parkingPlace.getReservation();
         return ParkingPlaceDto.builder()
                 .number(parkingPlace.getNumber())
                 .latitude(parkingPlace.getLatitude())
@@ -64,7 +64,7 @@ public class ParkingMapperImpl implements ParkingMapper {
     @Override
     public ParkingPlaceFullDto readFull(ParkingPlace parkingPlace) {
         ParkingPlaceInformation information = parkingPlace.getInformation();
-        ParkingPlaceReservation reservation = parkingPlace.getReservation();
+        Reservation reservation = parkingPlace.getReservation();
         Car occupantCar = information.getOccupantCar();
         ParkingPlaceReservationDto mappedReservation = null;
         if (reservation != null) {

@@ -1,4 +1,4 @@
-package re1kur.pars.service;
+package re1kur.pars.service.parking;
 
 import re1kur.core.dto.ParkingPlaceDto;
 import re1kur.core.dto.ParkingPlaceFullDto;
@@ -7,7 +7,7 @@ import re1kur.core.payload.ParkingPlacePayload;
 
 import java.util.List;
 
-public interface ParkingService {
+public interface PlaceService {
     ParkingPlaceShortDto create(ParkingPlacePayload payload, String token);
 
     ParkingPlaceDto getByNumber(Integer number);

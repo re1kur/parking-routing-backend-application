@@ -3,8 +3,8 @@ package re1kur.pars.mapper.impl;
 import org.springframework.stereotype.Component;
 import re1kur.core.payload.CarPayload;
 import re1kur.core.payload.CarUpdatePayload;
-import re1kur.pars.entity.Car;
-import re1kur.pars.entity.CarInformation;
+import re1kur.pars.entity.car.Car;
+import re1kur.pars.entity.car.CarInformation;
 import re1kur.pars.entity.Make;
 import re1kur.pars.mapper.CarInformationMapper;
 

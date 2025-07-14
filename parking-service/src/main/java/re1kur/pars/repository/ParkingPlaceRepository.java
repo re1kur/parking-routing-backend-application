@@ -2,7 +2,7 @@ package re1kur.pars.repository;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import re1kur.pars.entity.ParkingPlace;
+import re1kur.pars.entity.place.ParkingPlace;
 
 import java.util.List;
 

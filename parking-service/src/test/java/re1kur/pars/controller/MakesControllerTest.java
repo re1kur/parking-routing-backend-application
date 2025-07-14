@@ -12,7 +12,7 @@
 //import re1kur.core.exception.MakeNotFoundException;
 //import re1kur.core.payload.MakePayload;
 //import re1kur.pars.controller.make.MakesController;
-//import re1kur.pars.service.MakeService;
+//import re1kur.pars.service.make.MakeService;
 //
 //import static org.mockito.Mockito.*;
 //import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;

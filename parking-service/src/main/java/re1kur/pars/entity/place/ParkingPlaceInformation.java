@@ -1,7 +1,8 @@
-package re1kur.pars.entity;
+package re1kur.pars.entity.place;
 
 import jakarta.persistence.*;
 import lombok.*;
+import re1kur.pars.entity.car.Car;
 
 @Entity
 @Table(name = "parking_place_information")

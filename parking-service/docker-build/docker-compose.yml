@@ -1,10 +1,12 @@
-name: dev-pra-ps
+version: '2.38.1'
+
 services:
-  postgres:
-    image: 'postgres:17'
+  devpra-ps-psql:
+    container_name: devpra-ps-psql
+    image: postgres:17-alpine
     environment:
-      - 'POSTGRES_DB=developer'
-      - 'POSTGRES_PASSWORD=developer'
-      - 'POSTGRES_USER=developer'
+      - POSTGRES_DB=developer
+      - POSTGRES_PASSWORD=developer
+      - POSTGRES_USER=developer
     ports:
       - '5431:5432'

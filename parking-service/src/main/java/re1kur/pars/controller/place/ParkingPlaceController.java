@@ -6,13 +6,13 @@ import org.springframework.web.bind.annotation.*;
 import re1kur.core.dto.ParkingPlaceDto;
 import re1kur.core.dto.ParkingPlaceFullDto;
 import re1kur.core.dto.ParkingPlaceShortDto;
-import re1kur.pars.service.ParkingService;
+import re1kur.pars.service.parking.PlaceService;
 
 @RestController
 @RequestMapping("/api/places/{id}")
 @RequiredArgsConstructor
 public class ParkingPlaceController {
-    private final ParkingService service;
+    private final PlaceService service;
 
     @GetMapping
     public ResponseEntity<ParkingPlaceDto> getInformationParkingPlace(

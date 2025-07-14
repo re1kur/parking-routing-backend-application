@@ -1,4 +1,4 @@
-package re1kur.pars.entity;
+package re1kur.pars.entity.car;
 
 import jakarta.persistence.*;
 import lombok.*;

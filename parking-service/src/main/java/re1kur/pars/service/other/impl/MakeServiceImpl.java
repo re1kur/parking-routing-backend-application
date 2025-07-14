@@ -1,4 +1,4 @@
-package re1kur.pars.service.impl;
+package re1kur.pars.service.other.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,7 @@ import re1kur.core.payload.MakePayload;
 import re1kur.pars.entity.Make;
 import re1kur.pars.mapper.MakeMapper;
 import re1kur.pars.repository.MakeRepository;
-import re1kur.pars.service.MakeService;
+import re1kur.pars.service.other.MakeService;
 
 import java.util.List;
 

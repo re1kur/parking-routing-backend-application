@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import re1kur.core.dto.MakeDto;
 import re1kur.core.payload.MakePayload;
-import re1kur.pars.service.MakeService;
+import re1kur.pars.service.other.MakeService;
 
 @RestController
 @RequestMapping("/api/makes/{id}")
@@ -14,7 +14,7 @@ import re1kur.pars.service.MakeService;
 public class MakeController {
     private final MakeService service;
 
-    @GetMapping("/get") // TODO: edit privacy
+    @GetMapping            // TODO: edit privacy
     public ResponseEntity<MakeDto> get(
             @PathVariable(name = "id") Integer makeId
     ) {

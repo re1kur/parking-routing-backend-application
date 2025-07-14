@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import re1kur.core.dto.ParkingPlaceDto;
 import re1kur.core.dto.ParkingPlaceShortDto;
 import re1kur.core.payload.ParkingPlacePayload;
-import re1kur.pars.service.ParkingService;
+import re1kur.pars.service.parking.PlaceService;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping("/api/places")
 @RequiredArgsConstructor
 public class ParkingPlacesController {
-    private final ParkingService service;
+    private final PlaceService service;
 
     @PostMapping("/create")
     public ResponseEntity<ParkingPlaceShortDto> createParkingPlace(

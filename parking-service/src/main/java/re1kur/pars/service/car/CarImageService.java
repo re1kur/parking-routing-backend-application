@@ -1,4 +1,4 @@
-package re1kur.pars.service;
+package re1kur.pars.service.car;
 
 import re1kur.core.dto.CarImageDto;
 import re1kur.core.payload.CarImagePayload;

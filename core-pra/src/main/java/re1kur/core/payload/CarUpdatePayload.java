@@ -8,7 +8,6 @@ import jakarta.validation.constraints.Size;
 import java.util.UUID;
 
 public record CarUpdatePayload(
-        UUID ownerId,
         @Size(min = 5, max = 10, message = "License plate must be between 5 and 10 characters long.")
         @NotBlank(message = "License plate cannot be empty or contain backspaces.")
         String licensePlate,

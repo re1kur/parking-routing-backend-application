@@ -1,4 +1,4 @@
-package re1kur.pars.service.impl;
+package re1kur.pars.service.parking.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,10 +10,10 @@ import re1kur.core.exception.ParkingPlaceAlreadyExistsException;
 import re1kur.core.exception.ParkingPlaceNotFoundException;
 import re1kur.core.other.JwtExtractor;
 import re1kur.core.payload.ParkingPlacePayload;
-import re1kur.pars.entity.ParkingPlace;
+import re1kur.pars.entity.place.ParkingPlace;
 import re1kur.pars.mapper.ParkingMapper;
 import re1kur.pars.repository.ParkingPlaceRepository;
-import re1kur.pars.service.ParkingService;
+import re1kur.pars.service.parking.PlaceService;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,7 +21,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ParkingServiceImpl implements ParkingService {
+public class PlaceServiceImpl implements PlaceService {
     private final ParkingMapper placeMapper;
     private final ParkingPlaceRepository placeRepo;
 

@@ -8,8 +8,7 @@ import re1kur.pars.entity.Region;
 import re1kur.pars.entity.RegionCode;
 import re1kur.pars.mapper.RegionMapper;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -22,7 +21,7 @@ public class RegionMapperImpl implements RegionMapper {
                 .name(payload.name())
                 .build();
 
-        List<RegionCodePayload> codePayloads = payload.codePayloads();
+        List<RegionCodePayload> codePayloads = payload.codes();
         if (codePayloads != null && !codePayloads.isEmpty()) {
             Set<RegionCode> codes = codePayloads.stream()
                     .map(cp -> RegionCode.builder()
@@ -30,32 +29,46 @@ public class RegionMapperImpl implements RegionMapper {
                             .code(cp.codeValue())
                             .build())
                     .collect(Collectors.toSet());
-            region.setRegionCodes(codes);
+            region.setRegionCodes(codes.stream().toList());
         }
         return region;
     }
 
     @Override
     public RegionDto read(Region saved) {
+        Collection<RegionCode> codes = saved.getRegionCodes();
+        List<String> codeList = null;
+        if (codes != null) {
+            codeList = new ArrayList<>(codes).stream()
+                    .map(RegionCode::getCode)
+                    .toList();
+        }
+
         return RegionDto.builder()
+                .id(saved.getId())
                 .name(saved.getName())
-                .codes(saved.getRegionCodes().stream().map(RegionCode::getCode).toList())
+                .codes(codeList)
                 .build();
     }
+
 
     @Override
     public Region update(Region found, RegionPayload payload) {
         found.setName(payload.name());
-        List<RegionCodePayload> codePayloads = payload.codePayloads();
+        List<RegionCodePayload> codePayloads = payload.codes();
+
         if (codePayloads != null && !codePayloads.isEmpty()) {
             Set<RegionCode> codes = codePayloads.stream()
                     .map(cp -> RegionCode.builder()
                             .region(found)
                             .code(cp.codeValue())
                             .build())
-                    .collect(Collectors.toSet());
-            found.setRegionCodes(codes);
+                    .collect(Collectors.toCollection(HashSet::new));
+            found.getRegionCodes().clear();
+            found.getRegionCodes().addAll(codes);
+
         }
+
         return found;
     }
 

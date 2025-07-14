@@ -11,6 +11,6 @@ public record RegionPayload(
         @Size(max = 64)
         String name,
 
-        List<RegionCodePayload> codePayloads
+        List<RegionCodePayload> codes
 ) {
 }
