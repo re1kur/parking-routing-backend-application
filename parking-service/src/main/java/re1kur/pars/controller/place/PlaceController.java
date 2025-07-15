@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import re1kur.core.dto.ParkingPlaceFullDto;
-import re1kur.core.dto.ParkingPlaceDto;
+import re1kur.core.dto.PlaceDto;
 import re1kur.core.payload.ParkingPlacePayload;
 import re1kur.pars.service.parking.PlaceService;
 
@@ -18,19 +18,19 @@ public class PlaceController {
     // todo: edit policies
 
     @GetMapping
-    public ResponseEntity<ParkingPlaceDto> getParkingPlace(
+    public ResponseEntity<PlaceDto> getParkingPlace(
             @PathVariable(name = "id") Integer number) {
-        ParkingPlaceDto body = service.getByNumber(number);
+        PlaceDto body = service.getByNumber(number);
         return ResponseEntity.ok(body);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<ParkingPlaceDto> updatePlace(
+    public ResponseEntity<PlaceDto> updatePlace(
             @PathVariable(name = "id") Integer number,
             @RequestHeader(name = "Authorization") String bearer,
             @RequestBody @Valid ParkingPlacePayload payload
             ) {
-        ParkingPlaceDto body = service.update(number, payload, bearer);
+        PlaceDto body = service.update(number, payload, bearer);
         return ResponseEntity.ok(body);
     }
 
