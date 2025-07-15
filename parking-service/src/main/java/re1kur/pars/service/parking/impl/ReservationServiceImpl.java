@@ -9,7 +9,7 @@ import re1kur.core.dto.PlaceReservationsDto;
 import re1kur.core.exception.ParkingPlaceNotFoundException;
 import re1kur.core.other.JwtExtractor;
 import re1kur.core.payload.ParkingPlaceReservationPayload;
-import re1kur.pars.entity.place.ParkingPlace;
+import re1kur.pars.entity.place.Place;
 import re1kur.pars.entity.place.Reservation;
 import re1kur.pars.mapper.ReservationMapper;
 import re1kur.pars.repository.ParkingPlaceRepository;
@@ -34,7 +34,7 @@ public class ReservationServiceImpl implements ReservationService {
         UUID userId = UUID.fromString(sub);
 
         Integer number = payload.placeNumber();
-        ParkingPlace parkingPlace = parkingRepo.findById(number).orElseThrow(() ->
+        Place parkingPlace = parkingRepo.findById(number).orElseThrow(() ->
                 new ParkingPlaceNotFoundException("Parking place №%d not found.".formatted(number)));
 
         Reservation mapped = mapper.create(payload, userId, parkingPlace);

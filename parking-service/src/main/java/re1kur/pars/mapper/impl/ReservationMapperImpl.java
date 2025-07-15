@@ -3,7 +3,7 @@ package re1kur.pars.mapper.impl;
 import org.springframework.stereotype.Component;
 import re1kur.core.dto.ParkingPlaceReservationDto;
 import re1kur.core.payload.ParkingPlaceReservationPayload;
-import re1kur.pars.entity.place.ParkingPlace;
+import re1kur.pars.entity.place.Place;
 import re1kur.pars.entity.place.Reservation;
 import re1kur.pars.mapper.ReservationMapper;
 
@@ -12,7 +12,7 @@ import java.util.UUID;
 @Component
 public class ReservationMapperImpl implements ReservationMapper {
     @Override
-    public Reservation create(ParkingPlaceReservationPayload payload, UUID userId, ParkingPlace parkingPlace) {
+    public Reservation create(ParkingPlaceReservationPayload payload, UUID userId, Place parkingPlace) {
         return Reservation.builder()
                 .parkingPlace(parkingPlace)
                 .occupantUserId(userId)

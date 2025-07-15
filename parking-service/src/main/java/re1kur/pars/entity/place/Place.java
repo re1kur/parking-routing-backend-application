@@ -12,17 +12,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ParkingPlace {
+public class Place {
     @Id
     private Integer number;
 
     private Float latitude;
 
     private Float longitude;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "number")
-    private ParkingPlaceInformation information;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "number")

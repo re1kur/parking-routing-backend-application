@@ -20,7 +20,7 @@ public class Reservation {
 
     @OneToOne(mappedBy = "reservation")
     @JoinColumn(name = "place_number")
-    private ParkingPlace parkingPlace;
+    private Place parkingPlace;
 
     private UUID occupantUserId;
 
