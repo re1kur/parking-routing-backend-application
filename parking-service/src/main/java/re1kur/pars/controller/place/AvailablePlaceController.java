@@ -12,24 +12,25 @@ import re1kur.pars.service.parking.PlaceService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/places/available")
+@RequestMapping("/api/places/{id}/available")
 @RequiredArgsConstructor
-public class AvailablePlacesController {
+public class AvailablePlaceController {
     private final PlaceService service;
 
-    //todo: policies
-
     @GetMapping("/list/now")
-    public ResponseEntity<List<PlaceDto>> availableList() {
-        List<PlaceDto> body = service.getAvailableListNow();
+    public ResponseEntity<List<PlaceDto>> availableListByTodayForNumber(
+            @PathVariable(name = "id") Integer number
+    ) {
+        List<PlaceDto> body = service.getAvailableListNowByNumber(number);
         return ResponseEntity.ok(body);
     }
 
     @GetMapping("/list/{date}")
     public ResponseEntity<List<PlaceDto>> availableListByDate(
+            @PathVariable(name = "id") Integer number,
             @PathVariable(name = "date") String date
     ) {
-        List<PlaceDto> body = service.getAvailableListByDate(date);
+        List<PlaceDto> body = service.getAvailableListByNumberAndDate(date);
         return ResponseEntity.ok(body);
     }
 }

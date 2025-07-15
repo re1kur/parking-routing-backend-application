@@ -3,7 +3,7 @@ package re1kur.core.dto;
 import lombok.Builder;
 
 @Builder
-public record ParkingPlaceDto(
+public record PlaceDto(
         Integer number,
         Float latitude,
         Float longitude
