@@ -1,7 +1,0 @@
-package re1kur.core.exception;
-
-public class ParkingPlaceNotFoundException extends RuntimeException {
-    public ParkingPlaceNotFoundException(String message) {
-        super(message);
-    }
-}

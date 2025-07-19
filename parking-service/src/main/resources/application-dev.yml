@@ -7,13 +7,13 @@ spring:
         - rabbitmq/dev-build/docker-compose.yml
         - parking-service/docker-build/docker-compose.yml
   liquibase:
-    change-log: db/changelog/db.changelog-master.yml
+    change-log: db/changelog/db.changelog-master-dev.yml
   devtools:
     add-properties: true
-  datasource:
-    username: developer
-    password: developer
-    url: jdbc:postgresql://localhost:5432/developer
+#  datasource:
+#    username: developer
+#    password: developer
+#    url: jdbc:postgresql://localhost:5432/developer
   rabbitmq:
     username: developer
     password: developer

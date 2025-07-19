@@ -14,11 +14,13 @@ public interface CarService {
 
     CarFullDto update(UUID id, CarUpdatePayload payload, String token);
 
-    CarShortDto getShort(UUID id);
+    CarShortDto getShort(UUID id, String bearer);
 
-    CarFullDto getFull(UUID id);
+    CarFullDto getFull(UUID id, String bearer);
 
     void delete(UUID id, String token);
 
     List<CarDto> getCarsByOwner(String token);
+
+    CarDto getById(UUID id, String bearer);
 }

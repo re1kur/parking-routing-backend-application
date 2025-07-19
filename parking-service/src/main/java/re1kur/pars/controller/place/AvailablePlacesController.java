@@ -2,13 +2,11 @@ package re1kur.pars.controller.place;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import re1kur.core.dto.PlaceDto;
+import org.springframework.web.bind.annotation.*;
 import re1kur.pars.service.parking.PlaceService;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -20,16 +18,25 @@ public class AvailablePlacesController {
     //todo: policies
 
     @GetMapping("/list/now")
-    public ResponseEntity<List<PlaceDto>> availableList() {
-        List<PlaceDto> body = service.getAvailableListNow();
+    public ResponseEntity<List<Integer>> availableList() {
+        List<Integer> body = service.getAvailablePlacesByNow();
         return ResponseEntity.ok(body);
     }
 
     @GetMapping("/list/{date}")
-    public ResponseEntity<List<PlaceDto>> availableListByDate(
-            @PathVariable(name = "date") String date
+    public ResponseEntity<List<Integer>> availableListByDate(
+            @PathVariable(name = "date") LocalDate date
     ) {
-        List<PlaceDto> body = service.getAvailableListByDate(date);
+        List<Integer> body = service.getAvailablePlacesByDate(date);
+        return ResponseEntity.ok(body);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<Integer>> availableListByStartAndEnd(
+            @RequestParam(name = "start") LocalDateTime startAt,
+            @RequestParam(name = "end") LocalDateTime endAt
+            ) {
+        List<Integer> body = service.getAvailablePlacesByStartAndEnd(startAt, endAt);
         return ResponseEntity.ok(body);
     }
 }

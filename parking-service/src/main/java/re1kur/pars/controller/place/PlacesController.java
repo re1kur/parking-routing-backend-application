@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import re1kur.core.dto.PlaceDto;
-import re1kur.core.payload.ParkingPlacePayload;
+import re1kur.core.payload.PlacePayload;
 import re1kur.pars.service.parking.PlaceService;
 
 import java.util.List;
@@ -19,9 +19,9 @@ public class PlacesController {
     private final PlaceService service;
 
     @PostMapping("/create")
-    public ResponseEntity<PlaceDto> createParkingPlace(
+    public ResponseEntity<PlaceDto> create(
             @RequestHeader(name = "Authorization") String bearer,
-            @RequestBody @Valid ParkingPlacePayload payload
+            @RequestBody @Valid PlacePayload payload
     ) {
         PlaceDto body = service.create(payload, bearer);
         return ResponseEntity.status(HttpStatus.CREATED).body(body);

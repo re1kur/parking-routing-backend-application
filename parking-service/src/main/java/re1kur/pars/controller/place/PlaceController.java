@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import re1kur.core.dto.ParkingPlaceFullDto;
 import re1kur.core.dto.PlaceDto;
-import re1kur.core.payload.ParkingPlacePayload;
+import re1kur.core.payload.PlacePayload;
 import re1kur.pars.service.parking.PlaceService;
 
 @RestController
@@ -28,7 +28,7 @@ public class PlaceController {
     public ResponseEntity<PlaceDto> updatePlace(
             @PathVariable(name = "id") Integer number,
             @RequestHeader(name = "Authorization") String bearer,
-            @RequestBody @Valid ParkingPlacePayload payload
+            @RequestBody @Valid PlacePayload payload
             ) {
         PlaceDto body = service.update(number, payload, bearer);
         return ResponseEntity.ok(body);

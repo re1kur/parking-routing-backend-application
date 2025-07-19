@@ -4,5 +4,5 @@ import java.util.List;
 
 public record PlaceReservationsDto(
         Integer placeNumber,
-        List<ParkingPlaceReservationDto> reservations) {
+        List<ReservationFullDto> reservations) {
 }

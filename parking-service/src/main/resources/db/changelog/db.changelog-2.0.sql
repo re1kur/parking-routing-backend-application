@@ -9,11 +9,6 @@ CREATE TABLE IF NOT EXISTS parking_places
     UNIQUE (latitude, longitude)
 );
 
--- select p.number from parking_places
--- join reservations r on r.place_number = p.number
--- join reservation_information ri on ri.reservation_id = r.id
--- where ? >= start_at and ? <= end_at  -- +- zapros na available places on date
-
 --changeset re1kur:2
 CREATE TABLE IF NOT EXISTS reservations
 (
@@ -30,7 +25,7 @@ CREATE TABLE IF NOT EXISTS reservations
 CREATE TABLE IF NOT EXISTS reservation_information
 (
     reservation_id UUID PRIMARY KEY,
-    reserved_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    reserved_at TIMESTAMP NOT NULL DEFAULT now(),
     start_at TIMESTAMP NOT NULL,
     end_at TIMESTAMP NOT NULL,
     FOREIGN KEY (reservation_id) REFERENCES reservations(id)

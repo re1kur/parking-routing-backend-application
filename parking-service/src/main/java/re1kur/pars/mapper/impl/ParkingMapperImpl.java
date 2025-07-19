@@ -3,7 +3,7 @@ package re1kur.pars.mapper.impl;
 import org.springframework.stereotype.Component;
 import re1kur.core.dto.ParkingPlaceFullDto;
 import re1kur.core.dto.PlaceDto;
-import re1kur.core.payload.ParkingPlacePayload;
+import re1kur.core.payload.PlacePayload;
 import re1kur.pars.entity.place.Place;
 import re1kur.pars.mapper.ParkingMapper;
 
@@ -11,7 +11,7 @@ import re1kur.pars.mapper.ParkingMapper;
 public class ParkingMapperImpl implements ParkingMapper {
 
     @Override
-    public Place create(ParkingPlacePayload payload) {
+    public Place create(PlacePayload payload) {
         return Place.builder()
                 .number(payload.number())
                 .latitude(payload.latitude())
@@ -46,8 +46,7 @@ public class ParkingMapperImpl implements ParkingMapper {
     }
 
     @Override
-    public Place update(Place found, ParkingPlacePayload payload) {
-        found.setNumber(payload.number());
+    public Place update(Place found, PlacePayload payload) {
         found.setLatitude(payload.latitude());
         found.setLongitude(payload.longitude());
         return found;

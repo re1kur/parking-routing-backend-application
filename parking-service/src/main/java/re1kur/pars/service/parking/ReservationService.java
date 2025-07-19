@@ -2,23 +2,21 @@ package re1kur.pars.service.parking;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import re1kur.core.dto.ParkingPlaceReservationDto;
-import re1kur.core.dto.PlaceReservationsDto;
-import re1kur.core.payload.ParkingPlaceReservationPayload;
+import re1kur.core.dto.ReservationDto;
+import re1kur.core.dto.ReservationFullDto;
+import re1kur.core.payload.ReservationPayload;
 
-import java.time.OffsetDateTime;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.UUID;
 
 public interface ReservationService {
-    ParkingPlaceReservationDto create(String token, ParkingPlaceReservationPayload payload);
+    ReservationFullDto create(String token, ReservationPayload payload);
 
-    List<PlaceReservationsDto> getListForToday();
+    Page<ReservationDto> getPageByUserId(String token, Pageable pageable, LocalDate date);
 
-    List<ParkingPlaceReservationDto> getListByPlaceNumberForToday(Integer number);
+    ReservationDto getById(UUID id, String bearer);
 
-    List<PlaceReservationsDto> getListForDate(OffsetDateTime date);
+    ReservationFullDto getFullById(UUID id, String bearer);
 
-    Page<ParkingPlaceReservationDto> getPageByUserId(String token, Pageable pageable);
-
-    Page<ParkingPlaceReservationDto> getPageByUserIdAndDate(String token, OffsetDateTime offsetDateTime, Pageable pageable);
+    void deleteById(UUID id, String bearer);
 }

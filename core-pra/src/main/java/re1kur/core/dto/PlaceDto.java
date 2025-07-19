@@ -2,10 +2,12 @@ package re1kur.core.dto;
 
 import lombok.Builder;
 
+import java.math.BigDecimal;
+
 @Builder
 public record PlaceDto(
         Integer number,
-        Float latitude,
-        Float longitude
+        BigDecimal latitude,
+        BigDecimal longitude
 ) {
 }

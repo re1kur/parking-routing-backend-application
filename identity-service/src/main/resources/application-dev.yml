@@ -5,7 +5,8 @@ spring:
   docker:
     compose:
       enabled: true
-      file: identity-service/docker-build/docker-compose.yml
+      file:
+        - identity-service/docker-build/docker-compose.yml
   devtools:
     add-properties: true
   liquibase:

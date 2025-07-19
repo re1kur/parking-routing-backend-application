@@ -1,11 +1,11 @@
 name: dev-pra-authz
 services:
   redis:
-    image: redis:latest
+    image: redis:8-alpine3.21
     ports:
       - "6379:6379"
   postgres:
-    image: postgres:17
+    image: postgres:17-alpine
     environment:
       - "POSTGRES_USER=developer"
       - "POSTGRES_PASSWORD=developer"

@@ -5,20 +5,23 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import re1kur.core.dto.ParkingPlaceFullDto;
 import re1kur.core.dto.PlaceDto;
-import re1kur.core.exception.ParkingPlaceAlreadyExistsException;
-import re1kur.core.exception.ParkingPlaceNotFoundException;
+import re1kur.core.exception.PlaceAlreadyExistsException;
+import re1kur.core.exception.PlaceNotFoundException;
 import re1kur.core.other.JwtExtractor;
-import re1kur.core.payload.ParkingPlacePayload;
+import re1kur.core.payload.PlacePayload;
 import re1kur.pars.entity.place.Place;
 import re1kur.pars.mapper.ParkingMapper;
-import re1kur.pars.repository.ParkingPlaceRepository;
+import re1kur.pars.repository.PlaceRepository;
 import re1kur.pars.service.parking.PlaceService;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
@@ -26,16 +29,23 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PlaceServiceImpl implements PlaceService {
     private final ParkingMapper placeMapper;
-    private final ParkingPlaceRepository placeRepo;
+    private final PlaceRepository placeRepo;
 
     @Override
-    public PlaceDto create(ParkingPlacePayload payload, String bearer) {
+    @Transactional
+    public PlaceDto create(PlacePayload payload, String bearer) {
         UUID userId = UUID.fromString(JwtExtractor.extractSubFromJwt(bearer));
-        log.info("CREATE PARKING-PLACE [{}] by user [{}].", payload, userId);
+        BigDecimal latitude = payload.latitude();
+        BigDecimal longitude = payload.longitude();
         Integer number = payload.number();
+        log.info("CREATE PARKING-PLACE [{}] by user [{}].", payload, userId);
 
         if (placeRepo.existsById(number))
-            throw new ParkingPlaceAlreadyExistsException("Parking place [%d] already exists.".formatted(number));
+            throw new PlaceAlreadyExistsException("Parking place [%d] already exists.".formatted(number));
+        if (placeRepo.existsByLatitudeAndLongitude(latitude, longitude)) {
+            throw new PlaceAlreadyExistsException(("Parking place with latitude [%f] " +
+                    "and longitude [%f] already exists.").formatted(latitude, longitude));
+        }
 
         Place mapped = placeMapper.create(payload);
 
@@ -48,7 +58,7 @@ public class PlaceServiceImpl implements PlaceService {
     @Override
     public PlaceDto getByNumber(Integer number) {
         Place parkingPlace = placeRepo.findById(number).orElseThrow(() ->
-                new ParkingPlaceNotFoundException("Parking place [%d] not found.".formatted(number)));
+                new PlaceNotFoundException("Parking place [%d] not found.".formatted(number)));
 
         return placeMapper.read(parkingPlace);
     }
@@ -56,7 +66,7 @@ public class PlaceServiceImpl implements PlaceService {
     @Override
     public ParkingPlaceFullDto getFullByNumber(Integer number) {
         Place parkingPlace = placeRepo.findById(number).orElseThrow(() ->
-                new ParkingPlaceNotFoundException("Parking place [%d] not found.".formatted(number)));
+                new PlaceNotFoundException("Parking place [%d] not found.".formatted(number)));
 
         return placeMapper.readFull(parkingPlace);
     }
@@ -70,83 +80,75 @@ public class PlaceServiceImpl implements PlaceService {
     }
 
     @Override
-    public PlaceDto update(Integer number, ParkingPlacePayload payload, String bearer) {
+    @Transactional
+    public PlaceDto update(Integer number, PlacePayload payload, String bearer) {
         String sub = JwtExtractor.extractSubFromJwt(bearer);
         log.info("UPDATE PARKING-PLACE [{}] by user [{}]", payload, sub);
 
         Place found = placeRepo.findById(number).orElseThrow(() ->
-                new ParkingPlaceNotFoundException("Parking place [%d] not found.".formatted(number)));
+                new PlaceNotFoundException("Parking place [%d] not found.".formatted(number)));
 
         checkConflicts(found, payload);
 
-        Place updated = placeMapper.update(found, payload);
+        Place mapped = placeMapper.update(found, payload);
 
-        placeRepo.save(updated);
+        placeRepo.save(mapped);
 
-        return placeMapper.read(updated);
+        return placeMapper.read(mapped);
     }
 
-    private void checkConflicts(Place found, ParkingPlacePayload payload) {
-        Float payloadLatitude = payload.latitude();
-        Float payloadLongitude = payload.longitude();
-        Integer payloadNumber = payload.number();
+    private void checkConflicts(Place found, PlacePayload payload) {
+        BigDecimal payloadLatitude = payload.latitude();
+        BigDecimal payloadLongitude = payload.longitude();
 
-        Integer number = found.getNumber();
-        Float latitude = found.getLatitude();
-        Float longitude = found.getLongitude();
+        BigDecimal latitude = found.getLatitude();
+        BigDecimal longitude = found.getLongitude();
 
-        boolean numberEq = Objects.equals(number, payloadNumber);
-        if (!numberEq) {
-            if (placeRepo.existsById(number))
-                throw new ParkingPlaceAlreadyExistsException("Parking place [%d] already exists.".formatted(number));
-        }
+        boolean latitudeEq = latitude.compareTo(payloadLatitude) == 0;
+        boolean longitudeEq = longitude.compareTo(payloadLongitude) == 0;
 
-        boolean latitudeEq = Objects.equals(latitude, payloadLatitude);
-        boolean longitudeEq = Objects.equals(longitude, payloadLongitude);
-
-        if (!(latitudeEq || longitudeEq)) {
-            if (placeRepo.existsByLatitudeAndLongitude(payloadLatitude, payloadLongitude))
-                throw new ParkingPlaceAlreadyExistsException(("Parking place with latitude [%f] " +
-                        "and longitude [%f] already exists.").formatted(payloadLatitude, payloadLongitude));
+        if (!(latitudeEq && longitudeEq)) {
+            if (placeRepo.existsByLatitudeAndLongitude(payloadLatitude, payloadLongitude)) {
+                throw new PlaceAlreadyExistsException((
+                        "Parking place with latitude [%s] and longitude [%s] already exists."
+                ).formatted(payloadLatitude, payloadLongitude));
+            }
         }
     }
+
 
     @Override
+    @Transactional
     public void delete(Integer number, String bearer) {
         String sub = JwtExtractor.extractSubFromJwt(bearer);
         log.info("DELETE PARKING-PLACE [{}] by user [{}]", number, sub);
 
         Place found = placeRepo.findById(number).orElseThrow(() ->
-                new ParkingPlaceNotFoundException("Parking place [%d] not found.".formatted(number)));
+                new PlaceNotFoundException("Parking place [%d] not found.".formatted(number)));
 
         placeRepo.delete(found);
         log.info("DELETED PARKING-PLACE [{}] by user [{}]", number, sub);
     }
 
     @Override
-    public List<PlaceDto> getAvailableListNow() {
-        LocalDate today = LocalDate.now();
-        List<Place> body = placeRepo.findAllAvailableNumbersByDate(today);
-        return body.stream().map(placeMapper::read).toList();
+    public List<Integer> getAvailablePlacesByNow() {
+        LocalDate date = LocalDate.now();
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
+        return placeRepo.findAvailableNumbersByDate(startOfDay, endOfDay);
     }
 
     @Override
-    public List<PlaceDto> getAvailableListByDate(String date) {
-        //todo: getAvailableListByDate
-        return null;
+    public List<Integer> getAvailablePlacesByDate(LocalDate date) {
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
+        return placeRepo
+                .findAvailableNumbersByDate(startOfDay, endOfDay);
     }
 
     @Override
-    public List<PlaceDto> getAvailableListNowByNumber(Integer number) {
-        //todo: getAvailableListNowForNumber
-        return null;
+    public List<Integer> getAvailablePlacesByStartAndEnd(LocalDateTime startAt, LocalDateTime endAt) {
+        return placeRepo
+                .findAvailableNumbersByStartAndEnd(startAt, endAt);
     }
-
-    @Override
-    public List<PlaceDto> getAvailableListByNumberAndDate(String date) {
-        //todo: getAvailableListNowByNumberAndDate
-        return null;
-    }
-
-
 }

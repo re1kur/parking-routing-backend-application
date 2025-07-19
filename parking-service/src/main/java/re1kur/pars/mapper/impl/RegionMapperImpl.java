@@ -1,6 +1,7 @@
 package re1kur.pars.mapper.impl;
 
 import org.springframework.stereotype.Component;
+import re1kur.core.dto.RegionCodeDto;
 import re1kur.core.dto.RegionDto;
 import re1kur.core.payload.RegionCodePayload;
 import re1kur.core.payload.RegionPayload;
@@ -72,4 +73,20 @@ public class RegionMapperImpl implements RegionMapper {
         return found;
     }
 
+    @Override
+    public RegionCode createCode(RegionCodePayload payload, Region region) {
+        return RegionCode.builder()
+                .region(region)
+                .code(payload.codeValue())
+                .build();
+    }
+
+    @Override
+    public RegionCodeDto readCode(RegionCode mapped) {
+        return RegionCodeDto.builder()
+                .regionId(mapped.getRegion().getId())
+                .codeValue(mapped.getCode())
+                .build();
+
+    }
 }

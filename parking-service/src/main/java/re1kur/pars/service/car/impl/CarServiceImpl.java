@@ -104,11 +104,12 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public CarShortDto getShort(UUID id) {
-        log.info("Request to get a short-dto car with ID '{}'.", id);
+    public CarShortDto getShort(UUID carId, String bearer) {
+        String sub = JwtExtractor.extractSubFromJwt(bearer);
+        log.info("GET SHORT CAR [{}] by user [{}]", carId, sub);
 
-        Car car = carRepo.findById(id).orElseThrow(() ->
-                new CarNotFoundException("Car with ID '%s' not found.'".formatted(id)));
+        Car car = carRepo.findById(carId).orElseThrow(() ->
+                new CarNotFoundException("Car with ID '%s' not found.'".formatted(carId)));
 
         CarShortDto dto = carMapper.readShort(car);
         log.info("Response short-dto car: {}", dto.toString());
@@ -117,11 +118,12 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public CarFullDto getFull(UUID id) {
-        log.info("Request to get a full-dto car with ID '{}'.", id);
+    public CarFullDto getFull(UUID carId, String bearer) {
+        String sub = JwtExtractor.extractSubFromJwt(bearer);
+        log.info("GET FULL CAR [{}] by user [{}]", carId, sub);
 
-        Car car = carRepo.findById(id).orElseThrow(() ->
-                new CarNotFoundException("Car with ID '%s' not found.".formatted(id)));
+        Car car = carRepo.findById(carId).orElseThrow(() ->
+                new CarNotFoundException("Car with ID '%s' not found.".formatted(carId)));
 
         CarFullDto dto = carMapper.readFull(car);
         log.info("Response full-dto car: {}", dto.toString());
@@ -131,17 +133,16 @@ public class CarServiceImpl implements CarService {
 
     @Override
     @Transactional
-    public void delete(UUID carId, String token) {
-        String sub = JwtExtractor.extractSubFromJwt(token);
-        UUID userId = UUID.fromString(sub);
+    public void delete(UUID carId, String bearer) {
+        UUID userId = UUID.fromString(JwtExtractor.extractSubFromJwt(bearer));
 
         log.info("DELETE CAR [{}] by user[{}]", carId, userId);
 
         Car found = carRepo.findById(carId).orElseThrow(() ->
                 new CarNotFoundException("Car with ID '%s' not found.".formatted(carId)));
-        if (!userId.equals(found.getOwnerId())) throw new UserDoesNotHavePermissionForEndpoint(
-                ("User [%s] does not have permission " +
-                        "to perform actions with car that does not belong to him.").formatted(userId));
+        if (!userId.equals(found.getOwnerId()))
+            throw new UserDoesNotHavePermissionForEndpoint(("User [%s] does not have permission " +
+                    "to perform actions with car that does not belong to him.").formatted(userId));
 
         found.setCarInformation(null);
         found.getImages().clear();
@@ -155,5 +156,16 @@ public class CarServiceImpl implements CarService {
         UUID userId = UUID.fromString(sub);
 
         return carRepo.findAllByOwnerId(userId).stream().map(carMapper::read).toList();
+    }
+
+    @Override
+    public CarDto getById(UUID carId, String bearer) {
+        String sub = JwtExtractor.extractSubFromJwt(bearer);
+        log.info("GET CAR [{}] by user [{}]", carId, sub);
+
+        Car found = carRepo.findById(carId).orElseThrow(() ->
+                new CarNotFoundException("Car with ID '%s' not found.".formatted(carId)));
+
+        return carMapper.read(found);
     }
 }

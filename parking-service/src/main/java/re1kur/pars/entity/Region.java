@@ -23,7 +23,7 @@ public class Region {
     private String name;
 
     @OneToMany(mappedBy = "region",
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     private List<RegionCode> regionCodes = new ArrayList<>();

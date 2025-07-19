@@ -2,12 +2,14 @@ package re1kur.pars.service.parking;
 
 import re1kur.core.dto.PlaceDto;
 import re1kur.core.dto.ParkingPlaceFullDto;
-import re1kur.core.payload.ParkingPlacePayload;
+import re1kur.core.payload.PlacePayload;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface PlaceService {
-    PlaceDto create(ParkingPlacePayload payload, String token);
+    PlaceDto create(PlacePayload payload, String token);
 
     PlaceDto getByNumber(Integer number);
 
@@ -15,15 +17,13 @@ public interface PlaceService {
 
     List<PlaceDto> getPage(Integer page, Integer size);
 
-    PlaceDto update(Integer number, ParkingPlacePayload payload, String bearer);
+    PlaceDto update(Integer number, PlacePayload payload, String bearer);
 
     void delete(Integer number, String bearer);
 
-    List<PlaceDto> getAvailableListNow();
+    List<Integer> getAvailablePlacesByNow();
 
-    List<PlaceDto> getAvailableListByDate(String date);
+    List<Integer> getAvailablePlacesByDate(LocalDate date);
 
-    List<PlaceDto> getAvailableListNowByNumber(Integer number);
-
-    List<PlaceDto> getAvailableListByNumberAndDate(String date);
+    List<Integer> getAvailablePlacesByStartAndEnd(LocalDateTime startAt, LocalDateTime endAt);
 }

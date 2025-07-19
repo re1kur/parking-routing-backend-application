@@ -1,14 +1,17 @@
 package re1kur.pars.mapper;
 
-import re1kur.core.dto.ParkingPlaceReservationDto;
-import re1kur.core.payload.ParkingPlaceReservationPayload;
+import re1kur.core.dto.ReservationDto;
+import re1kur.core.dto.ReservationFullDto;
+import re1kur.core.payload.ReservationPayload;
 import re1kur.pars.entity.place.Place;
-import re1kur.pars.entity.place.Reservation;
+import re1kur.pars.entity.reservation.Reservation;
 
 import java.util.UUID;
 
 public interface ReservationMapper {
-    Reservation create(ParkingPlaceReservationPayload payload, UUID userId, Place parkingPlace);
+    Reservation create(ReservationPayload payload, UUID userId, Place parkingPlace);
 
-    ParkingPlaceReservationDto read(Reservation reservation);
+    ReservationDto read(Reservation reservation);
+
+    ReservationFullDto readFull(Reservation reservation);
 }

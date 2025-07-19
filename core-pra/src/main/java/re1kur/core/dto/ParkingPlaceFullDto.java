@@ -11,6 +11,6 @@ public record ParkingPlaceFullDto(
         Float longitude,
         Boolean isAvailable,
         UUID occupantCarId,
-        ParkingPlaceReservationDto reservation
+        ReservationFullDto reservation
 ) {
 }
