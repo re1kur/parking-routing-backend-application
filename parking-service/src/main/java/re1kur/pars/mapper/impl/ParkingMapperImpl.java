@@ -1,6 +1,8 @@
 package re1kur.pars.mapper.impl;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
+import re1kur.core.dto.PageDto;
 import re1kur.core.dto.ParkingPlaceFullDto;
 import re1kur.core.dto.PlaceDto;
 import re1kur.core.payload.PlacePayload;
@@ -30,6 +32,7 @@ public class ParkingMapperImpl implements ParkingMapper {
 
     @Override
     public ParkingPlaceFullDto readFull(Place parkingPlace) {
+        // todo: complete read full method
 //        ParkingPlaceReservationDto mappedReservation = null;
 //        if (reservation != null) {
 //            mappedReservation = reservationMapper.read(reservation);
@@ -50,5 +53,13 @@ public class ParkingMapperImpl implements ParkingMapper {
         found.setLatitude(payload.latitude());
         found.setLongitude(payload.longitude());
         return found;
+    }
+
+    @Override
+    public PageDto<PlaceDto> readPage(Page<Place> found) {
+        return new PageDto<>(found.getNumber(),
+                found.getTotalPages(),
+                found.getSize(),
+                found.getContent().stream().map(this::read).toList());
     }
 }

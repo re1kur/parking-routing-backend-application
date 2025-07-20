@@ -1,9 +1,8 @@
 package re1kur.pars.service.other;
 
 import re1kur.core.dto.MakeDto;
+import re1kur.core.dto.PageDto;
 import re1kur.core.payload.MakePayload;
-
-import java.util.List;
 
 public interface MakeService {
     MakeDto create(MakePayload payload, String bearer);
@@ -14,5 +13,5 @@ public interface MakeService {
 
     void delete(Integer makeId, String bearer);
 
-    List<MakeDto> getPage(Integer page, Integer size);
+    PageDto<MakeDto> getPage(Integer page, Integer size);
 }

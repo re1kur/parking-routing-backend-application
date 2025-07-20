@@ -188,5 +188,4 @@ public class ExceptionHandlerController {
 
         return ResponseEntity.status(badRequest).body(body);
     }
-    // TODO: exceptions handle makes, regions, region_codes
 }

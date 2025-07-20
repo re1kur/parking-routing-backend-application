@@ -15,11 +15,10 @@ import java.util.List;
 public class AvailablePlacesController {
     private final PlaceService service;
 
-    //todo: policies
-
     @GetMapping("/list/now")
     public ResponseEntity<List<Integer>> availableList() {
         List<Integer> body = service.getAvailablePlacesByNow();
+        // todo: reimagine returning body response
         return ResponseEntity.ok(body);
     }
 

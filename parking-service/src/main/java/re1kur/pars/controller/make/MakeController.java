@@ -14,7 +14,7 @@ import re1kur.pars.service.other.MakeService;
 public class MakeController {
     private final MakeService service;
 
-    @GetMapping            // TODO: edit privacy
+    @GetMapping
     public ResponseEntity<MakeDto> get(
             @PathVariable(name = "id") Integer makeId
     ) {

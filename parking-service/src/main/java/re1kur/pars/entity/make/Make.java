@@ -1,4 +1,4 @@
-package re1kur.pars.entity;
+package re1kur.pars.entity.make;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

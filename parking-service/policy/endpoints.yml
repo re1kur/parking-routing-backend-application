@@ -2,17 +2,57 @@ service_name: parking-service
 api_prefix: /api/parking
 policies: [
   {
+    method_name: "/api/cars/create",
+    method_type: "POST",
+    roles: [ "USER" ]
+  },
+  {
+    method_name: "/api/cars/list",
+    method_type: "GET",
+    roles: [ "USER" ]
+  },
+  {
+    method_name: "/api/cars/{id}",
+    method_type: "GET",
+    roles: [ "USER" ]
+  },
+  {
+    method_name: "/api/cars/{id}/short",
+    method_type: "GET",
+    roles: [ "USER" ]
+  },
+  {
+    method_name: "/api/cars/{id}/full",
+    method_type: "GET",
+    roles: [ "USER" ]
+  },
+  {
+    method_name: "/api/cars/{id}/update",
+    method_type: "PUT",
+    roles: [ "USER" ]
+  },
+  {
+    method_name: "/api/cars/{id}/delete",
+    method_type: "DELETE",
+    roles: [ "USER" ]
+  },
+  {
+    method_name: "/api/cars/{id}/images/create",
+    method_type: "POST",
+    roles: [ "USER" ]
+  },
+  {
+    method_name: "/api/cars/{id}/images/{file_id}/delete",
+    method_type: "DELETE",
+    roles: [ "USER" ]
+  },
+  {
     method_name: "/api/places/create",
     method_type: "POST",
     roles: [ "MODERATOR", "OPERATOR" ]
   },
   {
-    method_name: "/api/places/{id}/clear",
-    method_type: "PUT",
-    roles: [ "MODERATOR", "OPERATOR" ]
-  },
-  {
-    method_name: "/api/places/{id}/short",
+    method_name: "/api/places/list",
     method_type: "GET",
     roles: [ ]
   },
@@ -27,12 +67,42 @@ policies: [
     roles: [ ]
   },
   {
+    method_name: "/api/places/{id}/update",
+    method_type: "PUT",
+    roles: [ "MODERATOR", "OPERATOR" ]
+  },
+  {
+    method_name: "/api/places/{id}/delete",
+    method_type: "DELETE",
+    roles: [ "MODERATOR", "OPERATOR" ]
+  },
+  {
+    method_name: "/api/places/available/list/now",
+    method_type: "GET",
+    roles: [ ]
+  },
+  {
+    method_name: "/api/places/available/list/{date}",
+    method_type: "GET",
+    roles: [ ]
+  },
+  {
+    method_name: "/api/places/available/list",
+    method_type: "GET",
+    roles: [ ]
+  },
+  {
     method_name: "/api/makes/create",
     method_type: "POST",
     roles: [ "MODERATOR", "OPERATOR" ]
   },
   {
-    method_name: "/api/makes/get",
+    method_name: "/api/makes/list",
+    method_type: "GET",
+    roles: [ ]
+  },
+  {
+    method_name: "/api/makes/{id}",
     method_type: "GET",
     roles: [ ]
   },
@@ -47,63 +117,58 @@ policies: [
     roles: [ "MODERATOR", "OPERATOR" ]
   },
   {
+    method_name: "/api/regions/create",
+    method_type: "POST",
+    roles: [ "MODERATOR", "OPERATOR" ]
+  },
+  {
+    method_name: "/api/regions/list",
+    method_type: "GET",
+    roles: [ ]
+  },
+  {
+    method_name: "/api/regions/{id}",
+    method_type: "GET",
+    roles: [ ]
+  },
+  {
+    method_name: "/api/regions/{id}/update",
+    method_type: "PUT",
+    roles: [ "MODERATOR", "OPERATOR" ]
+  },
+  {
+    method_name: "/api/regions/{id}/delete",
+    method_type: "DELETE",
+    roles: [ "MODERATOR", "OPERATOR" ]
+  },
+  {
+    method_name: "/api/regions/{id}/codes/create",
+    method_type: "POST",
+    roles: [ "MODERATOR", "OPERATOR" ]
+  },
+  {
     method_name: "/api/reservations/create",
     method_type: "POST",
     roles: [ "USER" ]
   },
   {
-    method_name: "/api/reservations/my-list",
+    method_name: "/api/reservations/list",
     method_type: "GET",
     roles: [ "USER" ]
   },
   {
-    method_name: "/api/reservations/my-list/{date}",
+    method_name: "/api/reservations/{id}",
     method_type: "GET",
     roles: [ "USER" ]
   },
   {
-    method_name: "/api/reservations/all-list/today",
+    method_name: "/api/reservations/{id}/full",
     method_type: "GET",
-    roles: [ "MODERATOR", "OPERATOR" ]
-  },
-  {
-    method_name: "/api/reservations/list/today",
-    method_type: "GET",
-    roles: [ "MODERATOR", "OPERATOR" ]
-  },
-  {
-    method_name: "/api/reservations/list/{date}",
-    method_type: "GET",
-    roles: [ "MODERATOR", "OPERATOR" ]
-  },
-  {
-    method_name: "/api/cars/create",
-    method_type: "POST",
     roles: [ "USER" ]
   },
   {
-    method_name: "/api/cars/{id}/update",
-    method_type: "PUT",
-    roles: [ "USER" ]
-  },
-  {
-    method_name: "/api/cars/{id}/short",
-    method_type: "GET",
-    roles: [ ]
-  },
-  {
-    method_name: "/api/cars/{id}/full",
-    method_type: "GET",
-    roles: [ ]
-  },
-  {
-    method_name: "/api/cars/{id}/delete",
+    method_name: "/api/reservations/{id}/delete",
     method_type: "DELETE",
-    roles: [ "USER" ]
-  },
-  {
-    method_name: "/api/cars/my-list",
-    method_type: "GET",
     roles: [ "USER" ]
   }
 ]

@@ -1,6 +1,8 @@
 package re1kur.pars.mapper.impl;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
+import re1kur.core.dto.PageDto;
 import re1kur.core.dto.ReservationDto;
 import re1kur.core.dto.ReservationFullDto;
 import re1kur.core.payload.ReservationPayload;
@@ -56,5 +58,14 @@ public class ReservationMapperImpl implements ReservationMapper {
                 .endAt(information.getEndAt())
                 .paid(reservation.getPaid())
                 .build();
+    }
+
+    @Override
+    public PageDto<ReservationDto> pageRead(Page<Reservation> found) {
+        return new PageDto<>(
+                found.getNumber(),
+                found.getTotalPages(),
+                found.getSize(),
+                found.getContent().stream().map(this::read).toList());
     }
 }

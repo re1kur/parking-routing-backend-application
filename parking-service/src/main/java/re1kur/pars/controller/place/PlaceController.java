@@ -15,8 +15,6 @@ import re1kur.pars.service.parking.PlaceService;
 public class PlaceController {
     private final PlaceService service;
 
-    // todo: edit policies
-
     @GetMapping
     public ResponseEntity<PlaceDto> getParkingPlace(
             @PathVariable(name = "id") Integer number) {

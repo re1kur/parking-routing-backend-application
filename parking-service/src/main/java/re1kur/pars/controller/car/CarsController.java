@@ -29,7 +29,6 @@ public class CarsController {
         return ResponseEntity.status(HttpStatus.CREATED).body(body);
     }
 
-    // TODO: EDIT POLICY!
     @GetMapping("/list")
     public ResponseEntity<List<CarDto>> getMyCars(
             @RequestHeader(name = "Authorization") String bearer

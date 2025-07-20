@@ -1,7 +1,7 @@
 package re1kur.pars.service.parking;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import re1kur.core.dto.PageDto;
 import re1kur.core.dto.ReservationDto;
 import re1kur.core.dto.ReservationFullDto;
 import re1kur.core.payload.ReservationPayload;
@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface ReservationService {
     ReservationFullDto create(String token, ReservationPayload payload);
 
-    Page<ReservationDto> getPageByUserId(String token, Pageable pageable, LocalDate date);
+    PageDto<ReservationDto> getPageByUserId(String token, Pageable pageable, LocalDate date);
 
     ReservationDto getById(UUID id, String bearer);
 

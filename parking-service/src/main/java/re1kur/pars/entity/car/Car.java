@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import re1kur.pars.entity.RegionCode;
+import re1kur.pars.entity.region.RegionCode;
 
 import java.util.HashSet;
 import java.util.Objects;

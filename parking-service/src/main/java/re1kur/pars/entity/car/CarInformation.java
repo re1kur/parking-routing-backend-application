@@ -2,7 +2,7 @@ package re1kur.pars.entity.car;
 
 import jakarta.persistence.*;
 import lombok.*;
-import re1kur.pars.entity.Make;
+import re1kur.pars.entity.make.Make;
 
 import java.util.UUID;
 

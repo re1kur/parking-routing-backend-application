@@ -5,7 +5,7 @@ import re1kur.core.payload.CarPayload;
 import re1kur.core.payload.CarUpdatePayload;
 import re1kur.pars.entity.car.Car;
 import re1kur.pars.entity.car.CarInformation;
-import re1kur.pars.entity.Make;
+import re1kur.pars.entity.make.Make;
 import re1kur.pars.mapper.CarInformationMapper;
 
 @Component

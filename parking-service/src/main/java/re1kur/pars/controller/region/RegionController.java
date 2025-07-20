@@ -15,7 +15,7 @@ import re1kur.pars.service.other.RegionService;
 public class RegionController {
     private final RegionService service;
 
-    @GetMapping // TODO: edit privacy
+    @GetMapping
     public ResponseEntity<RegionDto> get(
             @PathVariable(name = "id") Integer regionId
     ) {

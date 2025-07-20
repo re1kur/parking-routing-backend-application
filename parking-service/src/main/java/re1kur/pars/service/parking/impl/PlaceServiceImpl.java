@@ -2,10 +2,12 @@ package re1kur.pars.service.parking.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import re1kur.core.dto.PageDto;
 import re1kur.core.dto.ParkingPlaceFullDto;
 import re1kur.core.dto.PlaceDto;
 import re1kur.core.exception.PlaceAlreadyExistsException;
@@ -72,11 +74,11 @@ public class PlaceServiceImpl implements PlaceService {
     }
 
     @Override
-    public List<PlaceDto> getPage(Integer page, Integer size) {
+    public PageDto<PlaceDto> getPage(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
 
-        return placeRepo.findAll(pageable).map(placeMapper::read).getContent();
-        // todo: reimagine way to return info about place
+        Page<Place> found = placeRepo.findAll(pageable);
+        return placeMapper.readPage(found);
     }
 
     @Override

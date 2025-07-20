@@ -15,7 +15,6 @@ import java.util.UUID;
 public class ReservationController {
     private final ReservationService service;
 
-    // todo: policy
     @GetMapping
     public ResponseEntity<ReservationDto> getReservation(
             @RequestHeader(name = "Authorization") String bearer,

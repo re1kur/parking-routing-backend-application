@@ -1,12 +1,14 @@
 package re1kur.pars.mapper.impl;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
+import re1kur.core.dto.PageDto;
 import re1kur.core.dto.RegionCodeDto;
 import re1kur.core.dto.RegionDto;
 import re1kur.core.payload.RegionCodePayload;
 import re1kur.core.payload.RegionPayload;
-import re1kur.pars.entity.Region;
-import re1kur.pars.entity.RegionCode;
+import re1kur.pars.entity.region.Region;
+import re1kur.pars.entity.region.RegionCode;
 import re1kur.pars.mapper.RegionMapper;
 
 import java.util.*;
@@ -88,5 +90,14 @@ public class RegionMapperImpl implements RegionMapper {
                 .codeValue(mapped.getCode())
                 .build();
 
+    }
+
+    @Override
+    public PageDto<RegionDto> readPage(Page<Region> found) {
+        return new PageDto<>(
+                found.getNumber(),
+                found.getTotalPages(),
+                found.getSize(),
+                found.getContent().stream().map(this::read).toList());
     }
 }

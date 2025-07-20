@@ -2,20 +2,20 @@ package re1kur.pars.service.other.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import re1kur.core.dto.MakeDto;
+import re1kur.core.dto.PageDto;
 import re1kur.core.exception.MakeAlreadyExistsException;
 import re1kur.core.exception.MakeNotFoundException;
 import re1kur.core.other.JwtExtractor;
 import re1kur.core.payload.MakePayload;
-import re1kur.pars.entity.Make;
+import re1kur.pars.entity.make.Make;
 import re1kur.pars.mapper.MakeMapper;
 import re1kur.pars.repository.MakeRepository;
 import re1kur.pars.service.other.MakeService;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -86,8 +86,9 @@ public class MakeServiceImpl implements MakeService {
     }
 
     @Override
-    public List<MakeDto> getPage(Integer page, Integer size) {
+    public PageDto<MakeDto> getPage(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
-        return repo.findAll(pageable).map(mapper::read).stream().toList();
+        Page<Make> found = repo.findAll(pageable);
+        return mapper.readPage(found);
     }
 }

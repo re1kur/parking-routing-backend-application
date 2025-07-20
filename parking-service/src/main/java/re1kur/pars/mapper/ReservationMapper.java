@@ -1,5 +1,7 @@
 package re1kur.pars.mapper;
 
+import org.springframework.data.domain.Page;
+import re1kur.core.dto.PageDto;
 import re1kur.core.dto.ReservationDto;
 import re1kur.core.dto.ReservationFullDto;
 import re1kur.core.payload.ReservationPayload;
@@ -14,4 +16,6 @@ public interface ReservationMapper {
     ReservationDto read(Reservation reservation);
 
     ReservationFullDto readFull(Reservation reservation);
+
+    PageDto<ReservationDto> pageRead(Page<Reservation> found);
 }

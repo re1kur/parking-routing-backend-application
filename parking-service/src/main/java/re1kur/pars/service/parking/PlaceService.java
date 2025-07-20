@@ -1,5 +1,6 @@
 package re1kur.pars.service.parking;
 
+import re1kur.core.dto.PageDto;
 import re1kur.core.dto.PlaceDto;
 import re1kur.core.dto.ParkingPlaceFullDto;
 import re1kur.core.payload.PlacePayload;
@@ -15,7 +16,7 @@ public interface PlaceService {
 
     ParkingPlaceFullDto getFullByNumber(Integer number);
 
-    List<PlaceDto> getPage(Integer page, Integer size);
+    PageDto<PlaceDto> getPage(Integer page, Integer size);
 
     PlaceDto update(Integer number, PlacePayload payload, String bearer);
 

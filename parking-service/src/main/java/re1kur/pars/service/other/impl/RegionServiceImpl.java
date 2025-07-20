@@ -2,10 +2,12 @@ package re1kur.pars.service.other.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import re1kur.core.dto.PageDto;
 import re1kur.core.dto.RegionCodeDto;
 import re1kur.core.dto.RegionDto;
 import re1kur.core.exception.RegionAlreadyExistsException;
@@ -14,14 +16,13 @@ import re1kur.core.exception.RegionNotFoundException;
 import re1kur.core.other.JwtExtractor;
 import re1kur.core.payload.RegionCodePayload;
 import re1kur.core.payload.RegionPayload;
-import re1kur.pars.entity.Region;
-import re1kur.pars.entity.RegionCode;
+import re1kur.pars.entity.region.Region;
+import re1kur.pars.entity.region.RegionCode;
 import re1kur.pars.mapper.RegionMapper;
 import re1kur.pars.repository.RegionCodeRepository;
 import re1kur.pars.repository.RegionRepository;
 import re1kur.pars.service.other.RegionService;
 
-import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -49,11 +50,10 @@ public class RegionServiceImpl implements RegionService {
     }
 
     @Override
-    public List<RegionDto> getPage(Integer page, Integer size) {
+    public PageDto<RegionDto> getPage(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
-        return regRepo.findAll(pageable)
-                .map(mapper::read)
-                .getContent();
+        Page<Region> found = regRepo.findAll(pageable);
+        return mapper.readPage(found);
     }
 
     @Override

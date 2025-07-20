@@ -7,10 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import re1kur.core.dto.MakeDto;
+import re1kur.core.dto.PageDto;
 import re1kur.core.payload.MakePayload;
 import re1kur.pars.service.other.MakeService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/makes")
@@ -27,13 +26,12 @@ public class MakesController {
         return ResponseEntity.status(HttpStatus.CREATED).body(body);
     }
 
-    // TODO: add to privacy
     @GetMapping("/list")
-    public ResponseEntity<List<MakeDto>> getList(
+    public ResponseEntity<PageDto<MakeDto>> getList(
             @RequestParam(name = "page", required = false, defaultValue = "0") @PositiveOrZero Integer page,
             @RequestParam(name = "size", required = false, defaultValue = "10") Integer size
     ) {
-        List<MakeDto> body = service.getPage(page, size);
+        PageDto<MakeDto> body = service.getPage(page, size);
         return ResponseEntity.ok(body);
     }
 }

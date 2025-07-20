@@ -18,8 +18,6 @@ import java.util.UUID;
 public class CarController {
     private final CarService carService;
 
-    //TODO: POLICIES
-
     @GetMapping
     public ResponseEntity<CarDto> getCar(
             @RequestHeader("Authorization") String bearer,

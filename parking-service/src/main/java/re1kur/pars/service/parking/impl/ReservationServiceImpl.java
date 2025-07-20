@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import re1kur.core.dto.PageDto;
 import re1kur.core.dto.ReservationDto;
 import re1kur.core.dto.ReservationFullDto;
 import re1kur.core.exception.PlaceNotFoundException;
@@ -61,21 +62,23 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public Page<ReservationDto> getPageByUserId(String bearer, Pageable pageable, LocalDate date) {
+    public PageDto<ReservationDto> getPageByUserId(String bearer, Pageable pageable, LocalDate date) {
         UUID userId = UUID.fromString(JwtExtractor.extractSubFromJwt(bearer));
 
         if (date != null) {
             LocalDateTime startOfDay = date.atStartOfDay();
             LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
 
-            return reservationRepo
-                    .findAllByUserIdAndDate(userId, startOfDay, endOfDay, pageable)
-                    .map(reservationMapper::read);
+            Page<Reservation> found = reservationRepo
+                    .findAllByUserIdAndDate(userId, startOfDay, endOfDay, pageable);
+
+            return reservationMapper.pageRead(found);
         }
 
-        return reservationRepo
-                .findAllByUserId(userId, pageable)
-                .map(reservationMapper::read);
+        Page<Reservation> found = reservationRepo
+                .findAllByUserId(userId, pageable);
+
+        return reservationMapper.pageRead(found);
     }
 
     @Override

@@ -9,7 +9,7 @@
 //import re1kur.core.exception.MakeAlreadyExistsException;
 //import re1kur.core.exception.MakeNotFoundException;
 //import re1kur.core.payload.MakePayload;
-//import re1kur.pars.entity.Make;
+//import re1kur.pars.entity.make.Make;
 //import re1kur.pars.mapper.MakeMapper;
 //import re1kur.pars.repository.MakeRepository;
 //import re1kur.pars.service.make.impl.MakeServiceImpl;

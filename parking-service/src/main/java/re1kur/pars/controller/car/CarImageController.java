@@ -17,8 +17,6 @@ import java.util.UUID;
 public class CarImageController {
     private final CarImageService imgService;
 
-    // TODO: POLICY!!!
-
     @PostMapping("/create")
     public ResponseEntity<CarImageDto> attachCarImage(
             @RequestHeader(name = "Authorization") String bearer,

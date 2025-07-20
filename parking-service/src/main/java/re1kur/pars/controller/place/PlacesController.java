@@ -6,11 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import re1kur.core.dto.PageDto;
 import re1kur.core.dto.PlaceDto;
 import re1kur.core.payload.PlacePayload;
 import re1kur.pars.service.parking.PlaceService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/places")
@@ -29,11 +28,11 @@ public class PlacesController {
 
 
     @GetMapping("/list")
-    public ResponseEntity<List<PlaceDto>> getList(
+    public ResponseEntity<PageDto<PlaceDto>> getList(
             @RequestParam(name = "page", required = false, defaultValue = "0") @PositiveOrZero Integer page,
             @RequestParam(name = "size", required = false, defaultValue = "10") Integer size
     ) {
-        List<PlaceDto> body = service.getPage(page, size);
+        PageDto<PlaceDto> body = service.getPage(page, size);
 
         return ResponseEntity.ok(body);
     }

@@ -1,5 +1,7 @@
 package re1kur.pars.mapper;
 
+import org.springframework.data.domain.Page;
+import re1kur.core.dto.PageDto;
 import re1kur.core.dto.ParkingPlaceFullDto;
 import re1kur.core.dto.PlaceDto;
 import re1kur.core.payload.PlacePayload;
@@ -13,4 +15,6 @@ public interface ParkingMapper {
     ParkingPlaceFullDto readFull(Place parkingPlace);
 
     Place update(Place found, PlacePayload payload);
+
+    PageDto<PlaceDto> readPage(Page<Place> found);
 }
